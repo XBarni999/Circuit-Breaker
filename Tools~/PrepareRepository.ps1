@@ -11,10 +11,13 @@ foreach($file in Get-ChildItem -LiteralPath (Join-Path $circuitRoot 'Editor') -F
 foreach($include in $project.Project.ItemGroup.Compile.Include){if($include){$circuitCopies['Tools~/Runtime/'+$include]=Join-Path $PSScriptRoot ('Runtime/'+$include)}}
 $circuitCopies['Tools~/Runtime/CircuitBreaker.csproj']=Join-Path $PSScriptRoot 'Runtime/CircuitBreaker.csproj'
 foreach($file in Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'Tests') -File -Filter '*.cs'){$circuitCopies['Tools~/Tests/'+$file.Name]=$file.FullName}
-foreach($name in @('Build.ps1','AuditBundle.py','PrepareRepository.ps1','RepositoryREADME.md','RepositoryCHANGELOG.md')){$circuitCopies['Tools~/'+$name]=Join-Path $PSScriptRoot $name}
+foreach($name in @('Build.ps1','AuditBundle.py','ComposeGallery.py','PrepareRepository.ps1','RepositoryREADME.md','RepositoryCHANGELOG.md')){$circuitCopies['Tools~/'+$name]=Join-Path $PSScriptRoot $name}
 $circuitCopies['README.md']=Join-Path $PSScriptRoot 'RepositoryREADME.md'
 $circuitCopies['CHANGELOG.md']=Join-Path $PSScriptRoot 'RepositoryCHANGELOG.md'
 $circuitExpected+=@($circuitCopies.Keys)
+$circuitGallery=Join-Path $circuitRoot 'Validation~/GalleryDocs'
+$circuitPhotos=@('blackout','locust','locust-mine','blackout-rack','locust-rack')
+$circuitExpected+=@($circuitPhotos | ForEach-Object {'docs/gallery/'+$_+'.png'})
 $circuitTracked=git -C $circuitPublish ls-files
 if($LASTEXITCODE){throw 'Cannot read tracked files.'}
 # Removing tracked asset files here is recoverable through Git; the working Unity project is never changed.
@@ -30,6 +33,11 @@ foreach($entry in $circuitCopies.GetEnumerator()){
     $text=[IO.File]::ReadAllText($entry.Value).Replace("`r`n","`n").TrimEnd()+"`n"
     [IO.File]::WriteAllText($destination,$text)
 }
-[IO.File]::WriteAllText((Join-Path $circuitPublish '.gitignore'),"**/bin/`n**/obj/`n**/Bundle/`nDelivery~/`nValidation~/`nTools~/Archive*/`nTools~/Decompiled/`n*.nobp`n*.dll`n*.exe`n*.log`n*.meta`n*.prefab`n*.asset`n*.anim`n*.mat`n*.fbx`n*.blend`n*.png`n*.jpg`n*.jpeg`n*.ogg`n")
+foreach($photo in $circuitPhotos){
+    $photoSource=Join-Path $circuitGallery ($photo+'.png')
+    $photoDestination=Join-Path $circuitPublish ('docs/gallery/'+$photo+'.png')
+    if(Test-Path -LiteralPath $photoSource){New-Item -ItemType Directory -Force -Path (Split-Path $photoDestination -Parent) | Out-Null;Copy-Item -LiteralPath $photoSource -Destination $photoDestination}
+}
+[IO.File]::WriteAllText((Join-Path $circuitPublish '.gitignore'),"**/bin/`n**/obj/`n**/Bundle/`nDelivery~/`nValidation~/`nTools~/Archive*/`nTools~/Decompiled/`n*.nobp`n*.dll`n*.exe`n*.log`n*.meta`n*.prefab`n*.asset`n*.anim`n*.mat`n*.fbx`n*.blend`n*.png`n*.jpg`n*.jpeg`n*.ogg`n!docs/gallery/*.png`n")
 [IO.File]::WriteAllText((Join-Path $circuitPublish '.gitattributes'),"* text=auto eol=lf`n")
-Write-Output ('Prepared code and text only: '+$circuitPublish)
+Write-Output ('Prepared code, documentation and gallery: '+$circuitPublish)

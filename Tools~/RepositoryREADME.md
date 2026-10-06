@@ -4,7 +4,26 @@ First public release: v0.1.12 (early testing). Player mission tests confirm effe
 
 Source code and documentation for a Nuclear Option tactical weapons mod. The playable pack is delivered as one `Circuit-Breaker.dll`, containing the gameplay runtime and an embedded Blueprinter bundle.
 
-This repository contains code, build scripts, tests and text documentation only. Models, textures, icons, materials, prefabs, Unity metadata, game assemblies and compiled artifacts are not included. A configured local asset workspace or an existing Blueprinter bundle is required to build the playable mod.
+This repository contains code, build scripts, tests, text documentation and rendered gallery images. Models, textures, icons, materials, prefabs, Unity metadata, game assemblies and compiled artifacts are not included. A configured local asset workspace or an existing Blueprinter bundle is required to build the playable mod.
+
+## Weapon gallery
+
+Actual current Unity models, rendered with their in-game materials.
+
+![AGM-180 Blackout with deployed wings](docs/gallery/blackout.png)
+
+![CBU-82M Locust mine dispenser](docs/gallery/locust.png)
+
+![Locust mine with deployed fins](docs/gallery/locust-mine.png)
+
+<details>
+<summary>Triple-rack configurations</summary>
+
+![Blackout triple rack](docs/gallery/blackout-rack.png)
+
+![Locust triple rack](docs/gallery/locust-rack.png)
+
+</details>
 
 ## AGM-180 Blackout
 

@@ -20,3 +20,4 @@ Tools~/Decompiled/
 *.jpg
 *.jpeg
 *.ogg
+!docs/gallery/*.png
