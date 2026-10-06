@@ -1,0 +1,8 @@
+{
+  "name": "CircuitBreaker.Editor",
+  "references": ["Blueprinter.Editor"],
+  "includePlatforms": ["Editor"],
+  "overrideReferences": true,
+  "precompiledReferences": ["Assembly-CSharp.dll", "Mirage.dll"],
+  "autoReferenced": true
+}

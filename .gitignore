@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+Tools~/Runtime/Bundle/
+Delivery~/
+Validation~/
+Tools~/Archive*/
+Tools~/Decompiled/
+*.nobp
+*.log
