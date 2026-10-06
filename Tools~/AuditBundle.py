@@ -1,10 +1,14 @@
 """Check the actual UnityFS delivery bundle, independently of the source YAML."""
 from pathlib import Path
 import json
+import argparse
 import UnityPy
 
 root = Path(__file__).resolve().parent.parent
-bundle = root / 'Delivery~' / 'Circuit Breaker_0.1.2.nobp'
+parser = argparse.ArgumentParser()
+parser.add_argument('--bundle', type=Path)
+args = parser.parse_args()
+bundle = args.bundle or root / 'Delivery~' / 'Circuit Breaker_0.1.11.nobp'
 env = UnityPy.load(str(bundle))
 base = 'assets/blueprinter/mods/iron gate/'
 report = []
@@ -15,7 +19,7 @@ for name in ['blackout.prefab', 'locust.prefab', 'locustmine.prefab',
     report.append('PRESENT ' + name)
 
 objects = {o.path_id: o for o in env.objects}
-for name, expected in [('blackout', 2), ('locust', 0), ('locustmine', 10)]:
+for name, expected in [('blackout', 2), ('locust', 0), ('locustmine', 7)]:
     go = env.container[base + name + '.prefab'].read_typetree()
     components = [objects[c['component']['m_PathID']] for c in go['m_Component']]
     data = [o.read_typetree() for o in components if o.type.name == 'MonoBehaviour']
@@ -26,9 +30,32 @@ for name, expected in [('blackout', 2), ('locust', 0), ('locustmine', 10)]:
     assert missile['impactFuse'] == (name == 'blackout')
     if name == 'blackout':
         assert len(missile['foldingFins']) == 4
+        assert missile['motors'][0]['thrust'] == 7000
+        assert missile['gLimit'] == 3.5 and missile['maxTurnRate'] == 8
+        cruise = [d for d in data if 'altitudeTarget' in d]
+        assert len(cruise) == 1 and cruise[0]['altitudeTarget'] == 35
     else:
         assert len(missile['motors']) == 0
+        seekers = [d for d in data if objects[d['m_Script']['m_PathID']].read().m_ClassName == 'MissileSeeker']
+        assert len(seekers) == 1, name
+        assert seekers[0]['missile']['m_PathID'] != 0, name
     report.append(f'CHECKED {name}: native HE yield {expected} kg; impact fuse {missile["impactFuse"]}')
+
+assert base + 'shaders/hpmwave.shader' not in env.container
+assert base + 'meshes/hpmwave.asset' not in env.container
+report.append('CHECKED removed visible microwave shader and mesh')
+for name, mass in [('blackout', 900), ('locust', 400), ('locustmine', 16)]:
+    definition = env.container[base + 'def_' + name + '.asset'].read_typetree()
+    info = env.container[base + 'wi_' + name + '.asset'].read_typetree()
+    assert definition['mass'] == mass == info['massPerRound'], name
+    assert definition['description'] == info['description'], name
+    assert definition['length'] > 0 and definition['width'] > 0 and definition['height'] > 0
+report.append('CHECKED encyclopedia descriptions, actual masses and model dimensions')
+assert abs(env.container[base + 'def_blackout.asset'].read_typetree()['radarSize'] - .004) < 1e-7
+for texture in ['champ_normal.png', 'champ_metallicsmoothness.png']:
+    assert base + 'textures/' + texture in env.container
+report.append('CHECKED Blackout RCS 0.004 and refreshed PBR textures')
+report.append('CHECKED serialized thrust 7000 N, 3.5 g and 8 deg/s')
 
 locust_info = env.container[base + 'wi_locust.asset'].read_typetree()
 assert locust_info['bomb'] and locust_info['gravMult'] == 1
@@ -36,11 +63,19 @@ assert not locust_info['glideBomb'] and not locust_info['missile']
 report.append('CHECKED native unguided CCIP WeaponInfo flags')
 
 manifest = json.loads(env.container['assets/blueprinter/generated/patch_manifest.json'].read().m_Script.lstrip('\ufeff'))
-assert manifest['modName'] == 'Circuit Breaker' and manifest['modVersion'] == '0.1.2'
+assert manifest['modName'] == 'Circuit Breaker' and manifest['modVersion'] == '0.1.11'
 ops = [json.loads(o['payloadJson']) for o in manifest['Ops'] if o['opId'] == 'OpAddWeaponToHardpoint']
 assert len(ops) == 11
 assert all(op['aircraft'] for op in ops)
 assert len(manifest['Patches']) > 0
+heat_material = env.container[base + 'materials/blackoutheat.mat'].read_typetree()
+heat_maps = dict(heat_material['m_SavedProperties']['m_TexEnvs'])
+assert heat_maps['_BaseMap']['m_Texture']['m_PathID'] == env.container[base + 'textures/blackoutheatmask.asset'].path_id
+assert heat_maps['_BumpMap']['m_Texture']['m_PathID'] == env.container[base + 'textures/blackoutheatnormal.asset'].path_id
+mask_image = env.container[base + 'textures/blackoutheatmask.asset'].read().image
+assert mask_image.getpixel((0, 0))[3] == 0
+assert mask_image.getpixel((64, 64))[3] > 240
+report.append('CHECKED soft radial alpha mask and smooth normal map for exhaust refraction')
 report.append(f'CHECKED {len(ops)} carrier operations and {len(manifest["Patches"])} vanilla-reference patches')
 mounts = [(path, reader.read_typetree()) for path, reader in env.container.items()
           if path.startswith(base + 'wm_blackout')]
@@ -82,12 +117,8 @@ def station_transforms(go):
 for key in ['bomb_500_double', 'bomb_250_triple']:
     go = env.container[base + 'cb_locust_' + key + '.prefab'].read_typetree()
     positions = [t['m_LocalPosition'] for t in station_transforms(go)]
-    if key.endswith('double'):
-        assert all(abs(p['x']) < .001 for p in positions)
-    else:
-        assert len({round(p['y'], 3) for p in positions}) == 2
-        assert sum(abs(p['x']) < .001 for p in positions) == 1
-report.append('CHECKED actual bundle: double bombs align with their rails; triple bombs retain triangular mounting')
+    assert len(positions) == (2 if key.endswith('double') else 3)
+report.append('CHECKED actual bundle: user-edited bomb racks retain all launch stations')
 for texture in ['champ_albedo.png', 'cbu_albedo.png', 'submunition_mine_albedo.png']:
     assert base + 'textures/' + texture in env.container
 report.append('CHECKED all three supplied albedo textures are packaged')
