@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.1.12 - First public release
+
+- Restore ground electronics and aircraft radar/datalink access four seconds after the last HPM exposure.
+- Automatically migrate the old 18-second recovery setting; additional active emitters still extend suppression.
+- Preserve the current player-edited weapon icon, exhaust and racks by packaging the already validated Unity bundle.
+- Player-tested ground air-defense suppression and Locust mine deployment work adequately. This remains an early release requiring more mission and multiplayer testing.
+
+
 ## Runtime 0.1.11
 
 - Capture each missile's unit target or GPS point at launch and retain it after player deselection.

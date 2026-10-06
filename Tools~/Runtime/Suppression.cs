@@ -12,9 +12,9 @@ namespace CircuitBreaker
         static readonly List<Unit> units=new List<Unit>();
         static float cleanup;
         static readonly Dictionary<Missile,float> nextReport=new Dictionary<Missile,float>();
-        public static bool Active(Component c)=>c&&affected.TryGetValue(c,out var expiry)&&Time.time<expiry;
-        public static bool ActiveUnit(Unit u)=>u&&affectedUnits.TryGetValue(u,out var expiry)&&Time.time<expiry;
-        public static bool ActiveAircraft(Aircraft a)=>a&&affectedAircraft.TryGetValue(a,out var expiry)&&Time.time<expiry;
+        public static bool Active(Component c)=>c&&affected.TryGetValue(c,out var expiry)&&HpmRules.SuppressionActive(Time.time,expiry);
+        public static bool ActiveUnit(Unit u)=>u&&affectedUnits.TryGetValue(u,out var expiry)&&HpmRules.SuppressionActive(Time.time,expiry);
+        public static bool ActiveAircraft(Aircraft a)=>a&&affectedAircraft.TryGetValue(a,out var expiry)&&HpmRules.SuppressionActive(Time.time,expiry);
         public static bool IsActivator(Unit u){
             if(!u||u.disabled||u is Missile||u is Aircraft||u is Ship)return false;
             bool radar=u.radar is Radar attached&&attached.RadarParameters.maxRange>0;
@@ -53,9 +53,9 @@ namespace CircuitBreaker
         public static void Apply(Unit u){
             if(!u||u.disabled||u is Missile)return;
             if(u is Aircraft aircraft){
-                affectedAircraft[aircraft]=Time.time+.75f;
-                foreach(var r in aircraft.GetComponentsInChildren<Radar>(true)){affected[r]=Time.time+.75f;r.detectedTargets.Clear();}
-                if(aircraft.radar is Radar radar){affected[radar]=Time.time+.75f;radar.detectedTargets.Clear();}
+                affectedAircraft[aircraft]=Time.time+Plugin.Duration.Value;
+                foreach(var r in aircraft.GetComponentsInChildren<Radar>(true)){affected[r]=Time.time+Plugin.Duration.Value;r.detectedTargets.Clear();}
+                if(aircraft.radar is Radar radar){affected[radar]=Time.time+Plugin.Duration.Value;radar.detectedTargets.Clear();}
                 return;
             }
             affectedUnits[u]=Time.time+Plugin.Duration.Value;

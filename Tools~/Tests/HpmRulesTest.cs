@@ -4,6 +4,10 @@ class HpmRulesTest
 {
     static void Check(bool value,string name){if(!value)throw new Exception(name);}
     static void Main(){
+        Check(HpmRules.SuppressionActive(103,104),"Electronics remain suppressed three seconds after final exposure");
+        Check(!HpmRules.SuppressionActive(104,104),"Electronics recover exactly four seconds after final exposure");
+        Check(!HpmRules.SuppressionActive(120,104),"A destroyed emitter cannot leave permanent suppression");
+        Check(HpmRules.SuppressionActive(104,106),"Another active emitter extends the recovery deadline");
         Check(!HpmRules.InActivationRange(true,10001,10000),"A launch-selected target outside 10 km must not activate HPM, even if other radars are nearby");
         Check(HpmRules.InActivationRange(true,10000,10000),"The captured launch target activates HPM at 10 km");
         Check(!HpmRules.InActivationRange(false,500,10000),"An invalid or destroyed launch target cannot activate HPM");

@@ -1,5 +1,7 @@
 # Circuit Breaker
 
+First public release: v0.1.12 (early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
+
 Source code and documentation for a Nuclear Option tactical weapons mod. The playable pack is delivered as one `Circuit-Breaker.dll`, containing the gameplay runtime and an embedded Blueprinter bundle.
 
 This repository contains code, build scripts, tests and text documentation only. Models, textures, icons, materials, prefabs, Unity metadata, game assemblies and compiled artifacts are not included. A configured local asset workspace or an existing Blueprinter bundle is required to build the playable mod.
@@ -12,7 +14,7 @@ HPM starts when the remembered enemy ground radar or missile air-defense target 
 
 Once active, the missile emits continuously for 20 seconds. Coverage follows the missile within a 10 km radius, refreshes every 0.25 seconds and respects static terrain shielding. Enemy ground radar, laser defenses and missile-turret acquisition are suppressed; gun CIWS retains degraded aiming. Native jamming events provide map indicators.
 
-Aircraft of every faction in the emission zone, including the launch aircraft and other friendly aircraft, lose radar contacts and access to remote datalink contacts. Local optical observations remain usable. Aircraft recover within approximately 0.75 seconds of the last exposure; repeated exposure extends the outage. This is applied per receiver without deleting the shared faction tracking database.
+Aircraft of every faction in the emission zone, including the launch aircraft and other friendly aircraft, lose radar contacts and access to remote datalink contacts. Local optical observations remain usable. Ground electronics and aircraft recover four seconds after their last HPM exposure. They remain suppressed through the first three seconds; overlapping active emitters extend the outage. The old 18-second recovery configuration is migrated automatically. This is applied per receiver without deleting the shared faction tracking database.
 
 The nominal terrain clearance is 35 m. Forward/downward probes inspect terrain and roofs up to six seconds ahead, including a swept corridor for narrow structures. Pitch requests ramp gradually and native maneuver limits remain in control; late obstacle detection can still result in a crash. Impact detonation uses the small native 2 kg HE charge, and disabled custom visuals are cleaned up.
 
