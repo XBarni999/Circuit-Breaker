@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>Circuit-Breaker</AssemblyName>
-    <Version>0.1.14</Version>
+    <Version>0.1.15</Version>
     <LangVersion>latest</LangVersion>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GameDir Condition="'$(GameDir)' == ''">F:\Games\Nuclear.Option.v0.34.1</GameDir>

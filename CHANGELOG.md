@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.1.15 - Critical plugin startup fix
+
+- Replace the invalid 4-to-4 acceptable range with a fixed four-second acceptable value list.
+- Fix the Player.log-confirmed ArgumentException in Plugin.Awake that prevented runtime patches and Locust controllers from initializing.
+- Add a startup regression check executing all seven production configuration bindings against actual installed BepInEx.
+- Retain the targetless deployment, collision cleanup, carrier compatibility and unchanged Unity bundle.
+
+
 ## v0.1.14 - Targetless Locust drop hotfix
 
 - Bind the dispenser and mines directly at spawn, with idempotent initialization.

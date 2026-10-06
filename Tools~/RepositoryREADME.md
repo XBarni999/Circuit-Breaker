@@ -1,6 +1,6 @@
 # Circuit Breaker
 
-Current release: v0.1.14 (targetless Locust drop hotfix; early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
+Current release: v0.1.15 (plugin startup hotfix; early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
 
 Source code and documentation for a Nuclear Option tactical weapons mod. The playable pack is delivered as one `Circuit-Breaker.dll`, containing the gameplay runtime and an embedded Blueprinter bundle.
 
@@ -95,6 +95,8 @@ To update visuals, use a complete local Blueprinter asset workspace in Unity 202
 - `Tools~/PrepareRepository.ps1`: prepares an isolated publishing checkout with code and text only.
 
 ## Validation
+
+The startup regression test executes all seven production configuration bindings against the installed BepInEx library, including migration of the old 18-second recovery setting. Versions v0.1.12-v0.1.14 contain an invalid equal-min/max range that can abort plugin initialization; update to v0.1.15.
 
 Release compilation, bundle/reference checks, embedded-resource hashes and focused numerical/policy tests are structural evidence. Earlier user mission tests confirmed ground air-defense suppression. The latest launch-target activation, aircraft datalink filtering, collision cleanup and multiplayer behavior still require mission verification.
 

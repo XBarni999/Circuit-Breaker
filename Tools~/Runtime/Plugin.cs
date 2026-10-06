@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace CircuitBreaker
 {
-    [BepInPlugin("ua.ncmod.circuitbreaker", "Circuit Breaker", "0.1.14")]
+    [BepInPlugin("ua.ncmod.circuitbreaker", "Circuit Breaker", "0.1.15")]
     [BepInDependency("com.nikkorap.blueprinter", "2.0.1")]
     public sealed class Plugin : BaseUnityPlugin
     {
@@ -23,7 +23,7 @@ namespace CircuitBreaker
         {
             Diagnostic=text=>Logger.LogInfo(text);
             Radius=Config.Bind("Blackout","Radius",10000f,new ConfigDescription("HPM radius (m): enemy ground electronics and aircraft of every faction.",new AcceptableValueRange<float>(1500,10000)));
-            Duration=Config.Bind("Blackout","SuppressionSeconds",4f,new ConfigDescription("Recovery delay after the last HPM exposure (seconds).",new AcceptableValueRange<float>(4,4)));
+            Duration=Config.Bind("Blackout","SuppressionSeconds",4f,new ConfigDescription("Recovery delay after the last HPM exposure (seconds).",new AcceptableValueList<float>(4f)));
             TriggerRange=Config.Bind("Blackout","ActivationRange",10000f,"Distance to the original launch target or GPS point that starts emission (m).");
             EmissionDuration=Config.Bind("Blackout","EmissionSeconds",20f,new ConfigDescription("Continuous emission duration after activation.",new AcceptableValueRange<float>(15,20)));
             MineLife=Config.Bind("Locust","Lifetime",210f,new ConfigDescription("Seconds after touchdown before native self detonation.",new AcceptableValueRange<float>(180,240)));
@@ -67,7 +67,7 @@ namespace CircuitBreaker
             Patch(typeof(CombatHUD),"SelectUnit",nameof(HudAccess));
             Patch(typeof(TargetListSelector),"CheckExclusions",nameof(ListAccess),false);
             harmony.Patch(AccessTools.Method(typeof(Turret),"AimTurret",new[]{typeof(WeaponStation)}),postfix:new HarmonyMethod(typeof(Plugin),nameof(Aim)));
-            Logger.LogInfo("Circuit Breaker 0.1.14: immutable launch-target activation; aircraft radar and datalink suppression including allies. Host authoritative simulation.");
+            Logger.LogInfo("Circuit Breaker 0.1.15: immutable launch-target activation; aircraft radar and datalink suppression including allies. Host authoritative simulation.");
         }
         void Patch(Type t,string method,string handler,bool prefix=true){var m=AccessTools.Method(t,method)??throw new MissingMethodException(t.Name,method);var h=new HarmonyMethod(typeof(Plugin),handler);harmony.Patch(m,prefix:prefix?h:null,postfix:prefix?null:h);}
         static void Launch(MountedMissile __instance,Unit owner,Unit target,GlobalPosition aimpoint){if(!owner||!owner.IsServer||!__instance.info||__instance.info.name!="WI_Blackout"||(bool)AccessTools.Field(typeof(MountedMissile),"fired").GetValue(__instance))return;launchPoints.RemoveAll(p=>!p.owner||p.expiry<Time.time);launchPoints.Add(new LaunchPoint{owner=owner,target=target,gps=!target,point=target?target.GlobalPosition():aimpoint,expiry=Time.time+10});}
