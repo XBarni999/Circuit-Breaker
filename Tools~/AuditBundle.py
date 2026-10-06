@@ -8,7 +8,7 @@ root = Path(__file__).resolve().parent.parent
 parser = argparse.ArgumentParser()
 parser.add_argument('--bundle', type=Path)
 args = parser.parse_args()
-bundle = args.bundle or root / 'Delivery~' / 'Circuit Breaker_0.1.11.nobp'
+bundle = args.bundle or root / 'Delivery~' / 'Circuit Breaker_0.1.13.nobp'
 env = UnityPy.load(str(bundle))
 base = 'assets/blueprinter/mods/iron gate/'
 report = []
@@ -63,10 +63,23 @@ assert not locust_info['glideBomb'] and not locust_info['missile']
 report.append('CHECKED native unguided CCIP WeaponInfo flags')
 
 manifest = json.loads(env.container['assets/blueprinter/generated/patch_manifest.json'].read().m_Script.lstrip('\ufeff'))
-assert manifest['modName'] == 'Circuit Breaker' and manifest['modVersion'] == '0.1.11'
+assert manifest['modName'] == 'Circuit Breaker' and manifest['modVersion'] == '0.1.13'
 ops = [json.loads(o['payloadJson']) for o in manifest['Ops'] if o['opId'] == 'OpAddWeaponToHardpoint']
 assert len(ops) == 11
 assert all(op['aircraft'] for op in ops)
+profile = json.loads((root / 'Editor' / 'InstalledAircraftCompatibility.json').read_text(encoding='utf8'))['entries']
+assert profile, 'No installed mod-aircraft compatibility data'
+assert not any('mig' in row['aircraftJsonKey'].lower() for row in profile)
+for op in ops:
+    mount = env.container[base + 'wm_' + op['weaponJsonKey'][3:].lower() + '.asset'].read_typetree()
+    internal = 'internal' in op['weaponJsonKey']
+    targets = {entry['aircraftJsonKey']: entry['hardpointIndices'] for entry in op['aircraft']}
+    for row in profile:
+        eligible = row['sourceWeaponKey'].startswith('bomb_250_') if 'Locust' in op['weaponJsonKey'] else row['sourceWeaponKey'].startswith(('CruiseMissile1_internal', 'AGM_heavy_'))
+        if eligible and row['internalMount'] == internal and row['ammo'] >= mount['ammo']:
+            assert row['index'] in targets.get(row['aircraftJsonKey'], []), (op['weaponJsonKey'], row)
+    assert not any('mig' in key.lower() for key in targets)
+report.append('CHECKED installed mod-aircraft carrier indices and capacities; MiG-29 excluded')
 assert len(manifest['Patches']) > 0
 heat_material = env.container[base + 'materials/blackoutheat.mat'].read_typetree()
 heat_maps = dict(heat_material['m_SavedProperties']['m_TexEnvs'])

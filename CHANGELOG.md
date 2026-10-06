@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.1.13 - Aircraft compatibility hotfix
+
+- Expand Locust options to aircraft stations carrying vanilla 250 kg bombs, including internal bays.
+- Expand Blackout options to all native ALM-C450 and AGM-68 heavy missile stations.
+- Match rack capacity to the native station options, keeping Blackout at a maximum of three missiles.
+- Add installed mod-aircraft profiles for Eclipse, CI-23 Camel, Ternion, King Viper, Shrike, Helios, Agni and Strike Raptor (Locust only). MiG-29 is excluded.
+- Preserve existing manual rack placement, models, materials, icons and exhaust.
+
+
 ## v0.1.12 - First public release
 
 - Restore ground electronics and aircraft radar/datalink access four seconds after the last HPM exposure.

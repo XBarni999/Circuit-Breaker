@@ -1,0 +1,700 @@
+{
+  "entries": [
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 1,
+      "sourceWeaponKey": "AGM_heavy_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 1,
+      "sourceWeaponKey": "AGM_heavy_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 1,
+      "sourceWeaponKey": "AGM_heavy_triple",
+      "ammo": 3,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 1,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 1,
+      "sourceWeaponKey": "bomb_250_glide_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 1,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 1,
+      "sourceWeaponKey": "bomb_250_triple",
+      "ammo": 3,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 2,
+      "sourceWeaponKey": "AGM_heavy_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 2,
+      "sourceWeaponKey": "AGM_heavy_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_glide_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_triple",
+      "ammo": 3,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_glide_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "1509_palafighter1",
+      "unitName": "KR-33 Agni",
+      "index": 4,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_glide_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_triple",
+      "ammo": 3,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 3,
+      "sourceWeaponKey": "AGM_heavy_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 3,
+      "sourceWeaponKey": "AGM_heavy_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 3,
+      "sourceWeaponKey": "AGM_heavy_triple",
+      "ammo": 3,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_glide_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_triple",
+      "ammo": 3,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F16M_KingViper",
+      "unitName": "F-16M King Viper",
+      "index": 4,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_glide_internalx2",
+      "ammo": 2,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_internal",
+      "ammo": 1,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_internalx2",
+      "ammo": 2,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_glide_internalx2",
+      "ammo": 2,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_internal",
+      "ammo": 1,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_internalx2",
+      "ammo": 2,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 8,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 8,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 8,
+      "sourceWeaponKey": "bomb_250_triple",
+      "ammo": 3,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 9,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 9,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_F22E_StrikeRaptor",
+      "unitName": "F-22E Strike Raptor",
+      "index": 9,
+      "sourceWeaponKey": "bomb_250_triple",
+      "ammo": 3,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_Interceptor1",
+      "unitName": "FS-41 Eclipse",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_Interceptor1",
+      "unitName": "FS-41 Eclipse",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_Interceptor1",
+      "unitName": "FS-41 Eclipse",
+      "index": 5,
+      "sourceWeaponKey": "AGM_heavy_triple",
+      "ammo": 3,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_Interceptor1",
+      "unitName": "FS-41 Eclipse",
+      "index": 5,
+      "sourceWeaponKey": "bomb_250_triple",
+      "ammo": 3,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_Interceptor1",
+      "unitName": "FS-41 Eclipse",
+      "index": 6,
+      "sourceWeaponKey": "AGM_heavy_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_LightFighter1",
+      "unitName": "F-99 Shrike",
+      "index": 1,
+      "sourceWeaponKey": "bomb_250_internal",
+      "ammo": 1,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_LightFighter1",
+      "unitName": "F-99 Shrike",
+      "index": 1,
+      "sourceWeaponKey": "bomb_250_internalx2",
+      "ammo": 2,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "Aryx_LightFighter1",
+      "unitName": "F-99 Shrike",
+      "index": 2,
+      "sourceWeaponKey": "AGM_heavy_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_LightFighter1",
+      "unitName": "F-99 Shrike",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_LightFighter1",
+      "unitName": "F-99 Shrike",
+      "index": 3,
+      "sourceWeaponKey": "AGM_heavy_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_LightFighter1",
+      "unitName": "F-99 Shrike",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "Aryx_LightFighter1",
+      "unitName": "F-99 Shrike",
+      "index": 4,
+      "sourceWeaponKey": "AGM_heavy_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "COINJ",
+      "unitName": "CI-23 Camel",
+      "index": 2,
+      "sourceWeaponKey": "AGM_heavy_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "COINJ",
+      "unitName": "CI-23 Camel",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "COINJ",
+      "unitName": "CI-23 Camel",
+      "index": 3,
+      "sourceWeaponKey": "AGM_heavy_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "COINJ",
+      "unitName": "CI-23 Camel",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "COINJ",
+      "unitName": "CI-23 Camel",
+      "index": 4,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "COINJ",
+      "unitName": "CI-23 Camel",
+      "index": 5,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_glide_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_glide_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 4,
+      "sourceWeaponKey": "AGM_heavy_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 4,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 5,
+      "sourceWeaponKey": "AGM_heavy_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 5,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 6,
+      "sourceWeaponKey": "AGM_heavy_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 6,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 7,
+      "sourceWeaponKey": "AGM_heavy_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 7,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 8,
+      "sourceWeaponKey": "AGM_heavy_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 8,
+      "sourceWeaponKey": "bomb_250_glide_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "P_Trisurface1",
+      "unitName": "FS-3 Ternion",
+      "index": 8,
+      "sourceWeaponKey": "bomb_250_single",
+      "ammo": 1,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 1,
+      "sourceWeaponKey": "AGM_heavy_internalx2",
+      "ammo": 2,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 1,
+      "sourceWeaponKey": "bomb_250_glide_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 1,
+      "sourceWeaponKey": "bomb_250_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 2,
+      "sourceWeaponKey": "AGM_heavy_internalx2",
+      "ammo": 2,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_glide_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 2,
+      "sourceWeaponKey": "bomb_250_internalx3",
+      "ammo": 3,
+      "internalMount": true
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 3,
+      "sourceWeaponKey": "AGM_heavy_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 3,
+      "sourceWeaponKey": "bomb_250_triple",
+      "ammo": 3,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 4,
+      "sourceWeaponKey": "AGM_heavy_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 4,
+      "sourceWeaponKey": "bomb_250_glide_double",
+      "ammo": 2,
+      "internalMount": false
+    },
+    {
+      "aircraftJsonKey": "XFS21",
+      "unitName": "XFS-21 Helios",
+      "index": 4,
+      "sourceWeaponKey": "bomb_250_triple",
+      "ammo": 3,
+      "internalMount": false
+    }
+  ]
+}

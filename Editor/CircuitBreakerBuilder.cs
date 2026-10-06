@@ -12,7 +12,7 @@ public static class CircuitBreakerSetup
 {
     const string R="Assets/Blueprinter/Mods/Iron Gate/";
     const string D="Assets/Blueprinter/_donotship/";
-    const string Version="0.1.11";
+    const string Version="0.1.13";
     static CircuitBreakerSetup(){EditorApplication.update+=Poll;}
     static bool busy;
     static void Poll(){if(busy||EditorApplication.isCompiling||EditorApplication.isUpdating||EditorApplication.isPlayingOrWillChangePlaymode)return;string p=R+"Tools~/request.txt";if(!File.Exists(p))return;var action=File.ReadAllText(p).Trim();busy=true;EditorApplication.delayCall+=()=>{try{if(action=="create")Create();else if(action=="build")Build();else if(action=="refreshbuild"){Create();Build();}else if(action=="heatbuild"){UpdateHeatOnly();Build();}else if(action=="flightbuild"){UpdateAltitudeOnly();Build();}else Inspect();File.WriteAllText(R+"Tools~/result.txt","OK "+action);}catch(Exception e){File.WriteAllText(R+"Tools~/result.txt",e.ToString());Debug.LogException(e);}finally{busy=false;if(File.Exists(p)&&File.ReadAllText(p).Trim()==action)File.Delete(p);}};}

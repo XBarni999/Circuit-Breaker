@@ -6,12 +6,12 @@ $circuitPublish=[IO.Path]::GetFullPath($PublishPath)
 if(!(Test-Path -LiteralPath (Join-Path $circuitPublish '.git'))){throw 'Publishing directory must be a Git checkout.'}
 $circuitExpected=@('README.md','CHANGELOG.md','.gitignore','.gitattributes')
 $circuitCopies=@{}
-foreach($file in Get-ChildItem -LiteralPath (Join-Path $circuitRoot 'Editor') -File | Where-Object Extension -In '.cs','.asmdef'){$circuitCopies['Editor/'+$file.Name]=$file.FullName}
+foreach($file in Get-ChildItem -LiteralPath (Join-Path $circuitRoot 'Editor') -File | Where-Object Extension -In '.cs','.asmdef','.json'){$circuitCopies['Editor/'+$file.Name]=$file.FullName}
 [xml]$project=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'Runtime/CircuitBreaker.csproj')
 foreach($include in $project.Project.ItemGroup.Compile.Include){if($include){$circuitCopies['Tools~/Runtime/'+$include]=Join-Path $PSScriptRoot ('Runtime/'+$include)}}
 $circuitCopies['Tools~/Runtime/CircuitBreaker.csproj']=Join-Path $PSScriptRoot 'Runtime/CircuitBreaker.csproj'
 foreach($file in Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'Tests') -File -Filter '*.cs'){$circuitCopies['Tools~/Tests/'+$file.Name]=$file.FullName}
-foreach($name in @('Build.ps1','AuditBundle.py','ComposeGallery.py','PrepareRepository.ps1','RepositoryREADME.md','RepositoryCHANGELOG.md')){$circuitCopies['Tools~/'+$name]=Join-Path $PSScriptRoot $name}
+foreach($name in @('Build.ps1','AuditBundle.py','InspectAircraftCarriers.py','ComposeGallery.py','PrepareRepository.ps1','RepositoryREADME.md','RepositoryCHANGELOG.md')){$circuitCopies['Tools~/'+$name]=Join-Path $PSScriptRoot $name}
 $circuitCopies['README.md']=Join-Path $PSScriptRoot 'RepositoryREADME.md'
 $circuitCopies['CHANGELOG.md']=Join-Path $PSScriptRoot 'RepositoryCHANGELOG.md'
 $circuitExpected+=@($circuitCopies.Keys)

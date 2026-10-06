@@ -1,6 +1,6 @@
 # Circuit Breaker
 
-First public release: v0.1.12 (early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
+Current release: v0.1.13 (aircraft compatibility hotfix; early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
 
 Source code and documentation for a Nuclear Option tactical weapons mod. The playable pack is delivered as one `Circuit-Breaker.dll`, containing the gameplay runtime and an embedded Blueprinter bundle.
 
@@ -39,13 +39,30 @@ The nominal terrain clearance is 35 m. Forward/downward probes inspect terrain a
 
 The missile holds its pass until the full emission charge expires, then attacks its remembered surviving unit. A fallback target may be selected only after emission ends if the original unit is gone; the original GPS point remains the fallback when no suitable unit is nearby.
 
-External and internal racks offer one, two or three missiles, with a maximum of three per rack. Rack placement, weapon icons and exhaust appearance are local Unity assets and are preserved during runtime-only updates.
+External and internal racks offer one, two or three missiles, with a maximum of three per rack. Compatible aircraft stations are expanded from the native ALM-C450 and AGM-68 heavy-missile options, with each rack limited by the station's native ammunition capacity. Rack placement, weapon icons and exhaust appearance are local Unity assets and are preserved during runtime-only updates.
 
 ## CBU-82M Locust
 
 Locust is an unguided 400 kg mine dispenser using native CCIP aiming. It aligns with its falling velocity, opens its doors before releasing four pairs of mines, and finishes deployment at approximately 325 m above terrain.
 
-Each of the eight mines carries 7 kg of conventional HE, arms four seconds after landing, triggers within 3 m of vehicles or aircraft, and self-destructs after 210 seconds. Damage uses native explosions. External racks hold one, two or three dispensers; internal racks hold one or two.
+Each of the eight mines carries 7 kg of conventional HE, arms four seconds after landing, triggers within 3 m of vehicles or aircraft, and self-destructs after 210 seconds. Damage uses native explosions. External racks hold one, two or three dispensers; internal racks hold one or two. Locust is also offered on native 250 kg bomb stations, with suitable internal/external rack types and capacities. Its physical mass remains 400 kg; this hotfix changes loadout compatibility.
+
+## Installed mod-aircraft compatibility
+
+The v0.1.13 compatibility profile follows weapon options in the installed aircraft bundles. MiG-29 is deliberately excluded. Rack counts follow each native station's capacity; Blackout never exceeds three per rack.
+
+| Aircraft | Blackout | Locust |
+| --- | --- | --- |
+| FS-41 Eclipse | Yes | Yes |
+| CI-23 Camel | Yes | Yes |
+| FS-3 Ternion | Yes | Yes |
+| F-16M King Viper | Yes | Yes |
+| F-99 Shrike | Yes | Yes |
+| XFS-21 Helios | Yes | Yes |
+| KR-33 Agni | Yes | Yes |
+| F-22E Strike Raptor | No matching heavy-missile station | Yes |
+
+Compatibility is serialized through Blueprinter carrier operations. These new aircraft placements require in-game checks; their original rack geometry and missile/bomb behavior are preserved.
 
 ## Requirements and installation
 
