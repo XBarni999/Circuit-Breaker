@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace CircuitBreaker
 {
-    [BepInPlugin("ua.ncmod.circuitbreaker", "Circuit Breaker", "0.1.13")]
+    [BepInPlugin("ua.ncmod.circuitbreaker", "Circuit Breaker", "0.1.14")]
     [BepInDependency("com.nikkorap.blueprinter", "2.0.1")]
     public sealed class Plugin : BaseUnityPlugin
     {
@@ -67,11 +67,11 @@ namespace CircuitBreaker
             Patch(typeof(CombatHUD),"SelectUnit",nameof(HudAccess));
             Patch(typeof(TargetListSelector),"CheckExclusions",nameof(ListAccess),false);
             harmony.Patch(AccessTools.Method(typeof(Turret),"AimTurret",new[]{typeof(WeaponStation)}),postfix:new HarmonyMethod(typeof(Plugin),nameof(Aim)));
-            Logger.LogInfo("Circuit Breaker 0.1.13: immutable launch-target activation; aircraft radar and datalink suppression including allies. Host authoritative simulation.");
+            Logger.LogInfo("Circuit Breaker 0.1.14: immutable launch-target activation; aircraft radar and datalink suppression including allies. Host authoritative simulation.");
         }
         void Patch(Type t,string method,string handler,bool prefix=true){var m=AccessTools.Method(t,method)??throw new MissingMethodException(t.Name,method);var h=new HarmonyMethod(typeof(Plugin),handler);harmony.Patch(m,prefix:prefix?h:null,postfix:prefix?null:h);}
         static void Launch(MountedMissile __instance,Unit owner,Unit target,GlobalPosition aimpoint){if(!owner||!owner.IsServer||!__instance.info||__instance.info.name!="WI_Blackout"||(bool)AccessTools.Field(typeof(MountedMissile),"fired").GetValue(__instance))return;launchPoints.RemoveAll(p=>!p.owner||p.expiry<Time.time);launchPoints.Add(new LaunchPoint{owner=owner,target=target,gps=!target,point=target?target.GlobalPosition():aimpoint,expiry=Time.time+10});}
-        static void Spawned(Missile __result,Unit owner,Unit target){if(!Is(__result,"WI_Blackout"))return;int i=launchPoints.FindIndex(p=>p.owner==owner&&p.expiry>=Time.time);if(i<0)return;var f=__result.GetComponent<BlackoutFlight>()??__result.gameObject.AddComponent<BlackoutFlight>();f.Bind(__result);f.CaptureLaunch(launchPoints[i].target,launchPoints[i].point,launchPoints[i].gps);launchPoints.RemoveAt(i);}
+        static void Spawned(Missile __result,Unit owner,Unit target){if(Is(__result,"WI_Locust")||Is(__result,"WI_LocustMine"))Started(__result);if(!Is(__result,"WI_Blackout"))return;int i=launchPoints.FindIndex(p=>p.owner==owner&&p.expiry>=Time.time);if(i<0)return;var f=__result.GetComponent<BlackoutFlight>()??__result.gameObject.AddComponent<BlackoutFlight>();f.Bind(__result);f.CaptureLaunch(launchPoints[i].target,launchPoints[i].point,launchPoints[i].gps);launchPoints.RemoveAt(i);}
         static void Started(Missile __instance)
         {
             if(Is(__instance,"WI_Blackout"))(__instance.GetComponent<BlackoutFlight>()??__instance.gameObject.AddComponent<BlackoutFlight>()).Bind(__instance);
@@ -96,7 +96,7 @@ namespace CircuitBreaker
         }
         static void PassiveType(MissileSeeker __instance,ref string __result){var m=SeekerMissile.GetValue(__instance) as Missile;if(Is(m,"WI_Locust"))__result="Unguided / CCIP";else if(Is(m,"WI_LocustMine"))__result="Contact mine";}
         static void PassiveMinimum(MissileSeeker __instance,ref float __result){var m=SeekerMissile.GetValue(__instance) as Missile;if(Is(m,"WI_Locust")||Is(m,"WI_LocustMine"))__result=0;}
-        static bool Collisions(Missile __instance){if(Is(__instance,"WI_LocustMine"))return false;if(Is(__instance,"WI_Blackout")){var flight=__instance.GetComponent<BlackoutFlight>();if(!flight)return true;flight.CheckImpact();return false;}return true;}
+        static bool Collisions(Missile __instance){if(Is(__instance,"WI_Locust")){__instance.GetComponent<LocustDispenser>()?.CheckImpact();return false;}if(Is(__instance,"WI_LocustMine"))return false;if(Is(__instance,"WI_Blackout")){var flight=__instance.GetComponent<BlackoutFlight>();if(!flight)return true;flight.CheckImpact();return false;}return true;}
         static bool Detection(TargetDetector __instance)=>!Suppression.Active(__instance);
         static void Operational(TargetDetector __instance,ref bool __result){if(Suppression.Active(__instance))__result=false;}
         static void Jammed(Radar __instance,ref bool __result){if(Suppression.Active(__instance))__result=true;}

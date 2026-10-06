@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.1.14 - Targetless Locust drop hotfix
+
+- Bind the dispenser and mines directly at spawn, with idempotent initialization.
+- Use native radar altitude and its ground-ray fallback for target-independent CCIP deployment.
+- Restore collision handling after launch clearance and clean up impacted containers with the native zero-yield detonation.
+- Preserve door-opening lead time, mine release spacing, all aircraft compatibility and user-edited Unity assets.
+
+
 ## v0.1.13 - Aircraft compatibility hotfix
 
 - Expand Locust options to aircraft stations carrying vanilla 250 kg bombs, including internal bays.

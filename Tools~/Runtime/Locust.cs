@@ -5,19 +5,29 @@ namespace CircuitBreaker
 {
     public sealed class LocustDispenser : MonoBehaviour
     {
-        Missile missile; bool opened; float openedAt,releaseDelay,nextPair,finishedAt; int released; Animation animation; WeaponInfo mineInfo;
+        Missile missile; bool opened; float openedAt,releaseDelay,nextPair,finishedAt,boundAt; int released; Animation animation; WeaponInfo mineInfo;
         const float PairInterval=.08f;
-        public void Bind(Missile m){missile=m;animation=m.GetComponentInChildren<Animation>(true);releaseDelay=(animation&&animation.clip?animation.clip.length:.77f)+.05f;}
+        public void Bind(Missile m){if(missile==m)return;missile=m;boundAt=Time.time;animation=m.GetComponentInChildren<Animation>(true);releaseDelay=(animation&&animation.clip?animation.clip.length:.77f)+.05f;}
+        float Age=>Mathf.Max(missile.timeSinceSpawn,Time.time-boundAt);
+        public void Impact(Vector3 normal){if(!missile||!missile.LocalSim||missile.disabled)return;missile.Arm();missile.Detonate(normal,false,true);}
+        public void CheckImpact(){
+            if(!missile||!missile.LocalSim||missile.disabled||!missile.rb||Age<.3f)return;
+            Vector3 velocity=missile.rb.velocity;
+            foreach(var hit in Physics.RaycastAll(transform.position,velocity.normalized,velocity.magnitude*Time.fixedDeltaTime*1.1f,PhysicsLayers.StaticsMask|PhysicsLayers.ShipsMask,QueryTriggerInteraction.Ignore)){
+                if(hit.collider.GetComponentInParent<Unit>()==missile)continue;Impact(hit.normal);return;
+            }
+        }
         void FixedUpdate(){
-            if(!missile||missile.disabled||released>=8)return;
-            if(missile.timeSinceSpawn<.3f||missile.rb.velocity.y>0)return;
-            if(!Physics.Raycast(transform.position,Vector3.down,out var hit,10000,PhysicsLayers.StaticsMask,QueryTriggerInteraction.Ignore))return;
+            if(!missile||missile.disabled||!missile.rb||released>=8)return;
+            if(Age<.3f)return;
+            if(missile.LocalSim&&!missile.IsTangible())missile.SetTangible(true);
+            missile.UpdateRadarAlt();float height=Mathf.Max(0,missile.radarAlt);
+            if(missile.LocalSim&&(height<=.25f||Age>120)){Impact(Vector3.up);return;}
+            if(missile.rb.velocity.y>0)return;
             if(!opened){
                 // Start the doors early enough for a fast, high-altitude drop; the mines release
                 // near the intended altitude after the entire clip has completed.
-                float lead=releaseDelay+3*PairInterval;
-                float openingHeight=325+Mathf.Max(0,-missile.rb.velocity.y)*lead+4.905f*lead*lead;
-                if(hit.distance>openingHeight)return;
+                if(!LocustDeploymentRules.ShouldOpen(Age,missile.rb.velocity.y,height,releaseDelay))return;
                 opened=true;openedAt=Time.time;nextPair=openedAt+releaseDelay;if(animation)animation.Play();
             }
             if(!missile.LocalSim||Time.time<nextPair)return;
@@ -28,7 +38,7 @@ namespace CircuitBreaker
             // 4 longitudinal pairs; ground footprint approx 150 x 40 m at 325 m release.
             for(int pair=0;pair<2;pair++){
                 int i=released++;
-                float row=i/2;float vy=missile.rb.velocity.y;float t=Mathf.Max(.3f,(vy+Mathf.Sqrt(vy*vy+2*9.81f*hit.distance))/9.81f);
+                float row=i/2;float vy=missile.rb.velocity.y;float t=Mathf.Max(.3f,(vy+Mathf.Sqrt(vy*vy+2*9.81f*height))/9.81f);
                 Vector3 v=missile.rb.velocity+forward*((row-1.5f)*50f/t)+right*((i%2==0?-20f:20f)/t);
                 Vector3 port=transform.TransformPoint(new Vector3(i%2==0?-.13f:.13f,-.32f,-.55f+row*.35f));
                 NetworkSceneSingleton<Spawner>.i.SpawnMissile(mineInfo.weaponPrefab,port,Quaternion.LookRotation(forward),v,null,missile);
@@ -42,7 +52,7 @@ namespace CircuitBreaker
         Missile missile; float landedAt,check; Vector3 previous; bool exploded; SphereCollider trigger;
         readonly Collider[] overlaps=new Collider[64];
         public bool Grounded {get;private set;}
-        public void Bind(Missile m){missile=m;previous=transform.position;var a=m.GetComponentInChildren<Animation>(true);if(a)a.Play();}
+        public void Bind(Missile m){if(missile==m)return;missile=m;previous=transform.position;var a=m.GetComponentInChildren<Animation>(true);if(a)a.Play();}
         void FixedUpdate(){
             if(!missile||missile.disabled||exploded||!missile.LocalSim)return;
             if(!Grounded&&missile.timeSinceSpawn>Plugin.MineLife.Value+45){Explode();return;}

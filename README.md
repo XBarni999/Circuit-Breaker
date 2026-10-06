@@ -1,6 +1,6 @@
 # Circuit Breaker
 
-Current release: v0.1.13 (aircraft compatibility hotfix; early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
+Current release: v0.1.14 (targetless Locust drop hotfix; early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
 
 Source code and documentation for a Nuclear Option tactical weapons mod. The playable pack is delivered as one `Circuit-Breaker.dll`, containing the gameplay runtime and an embedded Blueprinter bundle.
 
@@ -43,7 +43,7 @@ External and internal racks offer one, two or three missiles, with a maximum of 
 
 ## CBU-82M Locust
 
-Locust is an unguided 400 kg mine dispenser using native CCIP aiming. It aligns with its falling velocity, opens its doors before releasing four pairs of mines, and finishes deployment at approximately 325 m above terrain.
+Locust is an unguided 400 kg mine dispenser using native CCIP aiming. Deployment is independent of target selection or detection. Its controller is bound at spawn, and ground clearance uses native radar altitude with a sea-level fallback when no ground collider is available. Empty or impacted containers are cleaned up. It aligns with its falling velocity, opens its doors before releasing four pairs of mines, and finishes deployment at approximately 325 m above terrain.
 
 Each of the eight mines carries 7 kg of conventional HE, arms four seconds after landing, triggers within 3 m of vehicles or aircraft, and self-destructs after 210 seconds. Damage uses native explosions. External racks hold one, two or three dispensers; internal racks hold one or two. Locust is also offered on native 250 kg bomb stations, with suitable internal/external rack types and capacities. Its physical mass remains 400 kg; this hotfix changes loadout compatibility.
 
