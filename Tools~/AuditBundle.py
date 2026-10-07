@@ -8,7 +8,7 @@ root = Path(__file__).resolve().parent.parent
 parser = argparse.ArgumentParser()
 parser.add_argument('--bundle', type=Path)
 args = parser.parse_args()
-bundle = args.bundle or root / 'Delivery~' / 'Circuit Breaker_0.1.18.nobp'
+bundle = args.bundle or root / 'Delivery~' / 'Circuit Breaker_0.1.20.nobp'
 env = UnityPy.load(str(bundle))
 base = 'assets/blueprinter/mods/iron gate/'
 report = []
@@ -51,6 +51,10 @@ for name, mass in [('blackout', 900), ('locust', 400), ('locustmine', 16), ('law
     assert definition['description'] == info['description'], name
     assert definition['length'] > 0 and definition['width'] > 0 and definition['height'] > 0
 report.append('CHECKED encyclopedia descriptions, actual masses and model dimensions')
+for name, expected in [('blackout', 9), ('locust', .9)]:
+    assert abs(env.container[base + 'wi_' + name + '.asset'].read_typetree()['costPerRound'] - expected) < 1e-6
+    assert abs(env.container[base + 'def_' + name + '.asset'].read_typetree()['value'] - expected) < 1e-6
+report.append('CHECKED Blackout price 9 million and Locust price 900,000')
 assert abs(env.container[base + 'def_blackout.asset'].read_typetree()['radarSize'] - .004) < 1e-7
 for texture in ['champ_normal.png', 'champ_metallicsmoothness.png']:
     assert base + 'textures/' + texture in env.container
@@ -63,7 +67,7 @@ assert not locust_info['glideBomb'] and not locust_info['missile']
 report.append('CHECKED native unguided CCIP WeaponInfo flags')
 
 manifest = json.loads(env.container['assets/blueprinter/generated/patch_manifest.json'].read().m_Script.lstrip('\ufeff'))
-assert manifest['modName'] == 'Circuit Breaker' and manifest['modVersion'] == '0.1.18'
+assert manifest['modName'] == 'Circuit Breaker' and manifest['modVersion'] == '0.1.20'
 ops = [json.loads(o['payloadJson']) for o in manifest['Ops'] if o['opId'] == 'OpAddWeaponToHardpoint']
 assert len(ops) == 16
 assert all(op['aircraft'] for op in ops)

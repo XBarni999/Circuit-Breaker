@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.20 - Raised-road sensor activation and prices (unreleased)
+
+- Remove ground-level line-of-sight gating from sensor detection; elevated vehicles remain eligible within 70 m.
+- Validate the ascent corridor and attack path from the predicted apex before reserving a target, leaving obstructed mines waiting.
+- Set Blackout to 9 million and ordinary Locust to 900,000 in both WeaponInfo and encyclopedia definitions. Lawn Chair price is unchanged.
+
 ## v0.1.19 - Encyclopedia preview and visible sensor-mine hop (unreleased)
 
 - Restrict custom dispenser/mine simulation to mission states, preventing encyclopedia deployment loops.

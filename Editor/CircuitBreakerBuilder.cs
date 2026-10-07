@@ -12,7 +12,7 @@ public static class CircuitBreakerSetup
 {
     const string R="Assets/Blueprinter/Mods/Iron Gate/";
     const string D="Assets/Blueprinter/_donotship/";
-    const string Version="0.1.18";
+    const string Version="0.1.20";
     static CircuitBreakerSetup(){EditorApplication.update+=Poll;}
     static bool busy;
     static void Poll(){if(busy||EditorApplication.isCompiling||EditorApplication.isUpdating||EditorApplication.isPlayingOrWillChangePlaymode)return;string p=R+"Tools~/request.txt";if(!File.Exists(p))return;var action=File.ReadAllText(p).Trim();busy=true;EditorApplication.delayCall+=()=>{try{if(action=="create")Create();else if(action=="build")Build();else if(action=="refreshbuild"){Create();Build();}else if(action=="heatbuild"){UpdateHeatOnly();Build();}else if(action=="flightbuild"){UpdateAltitudeOnly();Build();}else Inspect();File.WriteAllText(R+"Tools~/result.txt","OK "+action);}catch(Exception e){File.WriteAllText(R+"Tools~/result.txt",e.ToString());Debug.LogException(e);}finally{busy=false;if(File.Exists(p)&&File.ReadAllText(p).Trim()==action)File.Delete(p);}};}
@@ -260,8 +260,8 @@ public static class CircuitBreakerSetup
         var champ=Clip("CHAMP","BlackoutDeploy",new[]{"CHAMP_Wing_L","CHAMP_Wing_R","CHAMP_Fin_L","CHAMP_Fin_R"});
         var doors=Clip("ClusterBomb","LocustOpen",new[]{"CBU_Door_L","CBU_Door_R"});
         var fins=Clip("Submunition_Mine","LocustMineDeploy",new[]{"Mine_VaneFin_1","Mine_VaneFin_2","Mine_VaneFin_3","Mine_VaneFin_4"});
-        var blackout=Weapon("Blackout","info_CruiseMissile1","CruiseMissile1","CHAMP",900,2,12,champ);
-        var locust=Weapon("Locust","info_Bomb_cluster1","bomb_cluster_400","ClusterBomb",400,0,1.5f,doors);
+        var blackout=Weapon("Blackout","info_CruiseMissile1","CruiseMissile1","CHAMP",900,2,9,champ);
+        var locust=Weapon("Locust","info_Bomb_cluster1","bomb_cluster_400","ClusterBomb",400,0,.9f,doors);
         Weapon("LocustMine","info_bomb_125_1","bomb_125_1","Submunition_Mine",16,7,0,fins);
         foreach(var file in Directory.GetFiles(R+"Models","*.fbx")){
             string modelPath=file.Replace('\\','/');var importer=(ModelImporter)AssetImporter.GetAtPath(modelPath);

@@ -53,17 +53,14 @@ namespace CircuitBreaker
             if(!missile.NetworkHQ)return;
             if(!strikeInfo)strikeInfo=Resources.FindObjectsOfTypeAll<WeaponInfo>().FirstOrDefault(w=>w.name=="Submunition1_info"&&w.weaponPrefab);
             if(!strikeInfo)return;
+            if(Obstructed(transform.position+Vector3.up*.25f,Vector3.up,SmartMineRules.LaunchHeight))return;
             candidates.Clear();BattlefieldGrid.GetUnitsInRangeNonAlloc(missile.GlobalPosition(),SmartMineRules.Radius,candidates);
             candidates.Sort((a,b)=>a&&b?((a.GlobalPosition()-missile.GlobalPosition()).sqrMagnitude.CompareTo((b.GlobalPosition()-missile.GlobalPosition()).sqrMagnitude)):0);
             TargetReservations.Cleanup(Time.time);
             foreach(var target in candidates){
                 if(!target||!SmartMineRules.Eligible(target is GroundVehicle,target.disabled,target.NetworkHQ&&missile.NetworkHQ,target.NetworkHQ==missile.NetworkHQ,(target.GlobalPosition()-missile.GlobalPosition()).sqrMagnitude))continue;
-                Vector3 start=transform.position+Vector3.up*.25f,line=target.transform.position+Vector3.up-start;
-                bool blocked=false;
-                foreach(var hit in Physics.RaycastAll(start,line.normalized,line.magnitude,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore)){
-                    var unit=hit.collider.GetComponentInParent<Unit>();if(unit!=missile&&unit!=target){blocked=true;break;}
-                }
-                if(blocked||!TargetReservations.TryReserve(target.GetInstanceID(),Time.time))continue;
+                Vector3 apex=transform.position+Vector3.up*SmartMineRules.LaunchHeight;
+                if(!AttackPathClear(apex,target)||!TargetReservations.TryReserve(target.GetInstanceID(),Time.time))continue;
                 attackTarget=target;reservationId=target.GetInstanceID();jumping=true;Grounded=false;jumpTime=0;
                 missile.rb.useGravity=false;missile.rb.isKinematic=true;
                 return;
@@ -78,6 +75,14 @@ namespace CircuitBreaker
             }
             return false;
         }
+        bool AttackPathClear(Vector3 from,Unit target){
+            foreach(var collider in Physics.OverlapSphere(from,.18f,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore))if(!collider.GetComponentInParent<Missile>())return false;
+            Vector3 line=target.transform.position+Vector3.up-from;
+            foreach(var hit in Physics.SphereCastAll(from,.18f,line.normalized,line.magnitude,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore)){
+                var unit=hit.collider.GetComponentInParent<Unit>();if(unit==target||unit is Missile)continue;return false;
+            }
+            return true;
+        }
         void Jump(){
             if(!attackTarget||attackTarget.disabled||attackTarget.NetworkHQ==missile.NetworkHQ){Retire();return;}
             TargetReservations.Renew(reservationId,Time.time);
@@ -90,11 +95,7 @@ namespace CircuitBreaker
             jumpTime=nextTime;
             if(jumpTime<SmartMineRules.JumpApexTime)return;
             Vector3 line=attackTarget.transform.position+Vector3.up-next;
-            foreach(var collider in Physics.OverlapSphere(next,.18f,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore))if(!collider.GetComponentInParent<Missile>()){Retire();return;}
-            // Do not launch a dive through a bridge deck or overhead road.
-            foreach(var hit in Physics.SphereCastAll(next,.18f,line.normalized,line.magnitude,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore)){
-                var unit=hit.collider.GetComponentInParent<Unit>();if(unit==attackTarget||unit is Missile)continue;Retire();return;
-            }
+            if(!AttackPathClear(next,attackTarget)){Retire();return;}
             try{
                 Unit owner=missile;if(missile.ownerID.TryGetUnit(out var launcher)&&launcher)owner=launcher;
                 var strike=NetworkSceneSingleton<Spawner>.i.SpawnMissile(strikeInfo.weaponPrefab,next,Quaternion.LookRotation(line),line.normalized*25,attackTarget,owner);

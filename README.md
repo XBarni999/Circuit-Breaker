@@ -27,6 +27,8 @@ Actual current Unity models, rendered with their in-game materials.
 
 ## AGM-180 Blackout
 
+Price: $9 million per missile.
+
 Blackout captures the target assigned to each missile when it is fired. Deselecting that target or selecting a different unit afterwards does not change the missile's designation. It does not activate or redirect toward unrelated radars encountered along the route.
 
 HPM starts when the remembered enemy ground radar or missile air-defense target is within 10 km of the missile. The mod has no player-facing GPS designation interface; a selected ground radar/SAM is required. Vanilla free-fire supplies a point 50 km ahead rather than a player-selected GPS coordinate, so targetless Blackout launches are rejected. Explicit launches against ordinary tanks are rejected. No aircraft suppression occurs before this activation gate is met.
@@ -43,11 +45,13 @@ External and internal racks offer one, two or three missiles, with a maximum of 
 
 ## CBU-82M Locust
 
+Price: $900,000 per dispenser.
+
 Locust remains the original unguided 400 kg CCIP dispenser. It opens before deploying eight conventional contact mines at approximately 325 m above terrain, independently of selected targets. Each mine contains 7 kg HE, arms four seconds after landing, reacts to vehicles or aircraft within 3 m and self-destructs after 210 seconds. Damage uses native explosions. The original flat mine model is restored.
 
-## CBU-82S Lawn Chair (v0.1.19 development build)
+## CBU-82S Lawn Chair (v0.1.20 development build)
 
-Lawn Chair is a separate selectable dispenser: it sits around waiting for visitors. It carries eight Zhdan sensor mines, without replacing Locust. The mines descend vertically with stabilizers down, with fall speed limited to 18 m/s, and rest on the surface normal. They arm four seconds after touchdown and scan every 0.75 seconds for enemy GroundVehicle units within 70 m. Aircraft, buildings, allies and unknown factions are excluded; static terrain blocks detection.
+Lawn Chair is a separate selectable dispenser: it sits around waiting for visitors. It carries eight Zhdan sensor mines, without replacing Locust. The mines descend vertically with stabilizers down, with fall speed limited to 18 m/s, and rest on the surface normal. They arm four seconds after touchdown and scan every 0.75 seconds for enemy GroundVehicle units within 70 m. Aircraft, buildings, allies and unknown factions are excluded. Detection uses the 70 m sensor radius, including vehicles on raised roads. It does not require a ground-level line of sight. Before hopping, the mine checks the upward corridor and the attack path from its predicted apex; blocked corridors leave it waiting.
 
 A mine reserves its target across all sensor mines, then visibly hops upward on a roughly four-second ballistic arc with a slight spin. At its 80 m apex the mine is replaced by one unmodified vanilla GS25 aimed at the reserved target. The reservation is refreshed throughout the hop and remains for five seconds after handoff. Swept collision checks cover the upward path and the dive toward the target; a blocked hop or dive cancels the attack and releases the reservation, rather than spawning a weapon through bridge decks or overhead roads. Ownership and faction are inherited from the original launcher. Unused sensor mines expire after 300 seconds without a contact explosion. Native GS25 guidance and damage remain unchanged. Mission and multiplayer testing remain pending.
 
