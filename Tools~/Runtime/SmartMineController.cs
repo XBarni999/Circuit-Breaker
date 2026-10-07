@@ -59,12 +59,22 @@ namespace CircuitBreaker
             TargetReservations.Cleanup(Time.time);
             foreach(var target in candidates){
                 if(!target||!SmartMineRules.Eligible(target is GroundVehicle,target.disabled,target.NetworkHQ&&missile.NetworkHQ,target.NetworkHQ==missile.NetworkHQ,(target.GlobalPosition()-missile.GlobalPosition()).sqrMagnitude))continue;
+                if(!GroundSightClear(target))continue;
                 Vector3 apex=transform.position+Vector3.up*SmartMineRules.LaunchHeight;
                 if(!AttackPathClear(apex,target)||!TargetReservations.TryReserve(target.GetInstanceID(),Time.time))continue;
                 attackTarget=target;reservationId=target.GetInstanceID();jumping=true;Grounded=false;jumpTime=0;
                 missile.rb.useGravity=false;missile.rb.isKinematic=true;
                 return;
             }
+        }
+        bool GroundSightClear(Unit target){
+            Vector3 from=transform.position+Vector3.up*.25f;
+            Vector3 line=target.transform.position+Vector3.up-from;
+            foreach(var hit in Physics.RaycastAll(from,line.normalized,line.magnitude,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore)){
+                var unit=hit.collider.GetComponentInParent<Unit>();
+                if(unit!=missile&&unit!=target)return false;
+            }
+            return true;
         }
         bool Obstructed(Vector3 start,Vector3 direction,float distance){
             foreach(var collider in Physics.OverlapSphere(start,.18f,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore))if(!collider.GetComponentInParent<Missile>())return true;

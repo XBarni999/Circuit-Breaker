@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.21 - Restore optical sensor visibility (unreleased)
+
+- Restore ground-level line-of-sight detection for Zhdan mines, as requested; vehicles hidden by road decks or other solid obstacles remain undetected.
+- Preserve the visible hop, ascent/dive collision checks and v0.1.20 prices.
+
 ## v0.1.20 - Raised-road sensor activation and prices (unreleased)
 
 - Remove ground-level line-of-sight gating from sensor detection; elevated vehicles remain eligible within 70 m.
