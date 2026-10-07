@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>Circuit-Breaker</AssemblyName>
-    <Version>0.1.16</Version>
+    <Version>0.1.17</Version>
     <LangVersion>latest</LangVersion>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GameDir Condition="'$(GameDir)' == ''">F:\Games\Nuclear.Option.v0.34.1</GameDir>
@@ -26,6 +26,6 @@
     <Reference Include="UnityEngine.IMGUIModule"><HintPath>$(Managed)\UnityEngine.IMGUIModule.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine.TextRenderingModule"><HintPath>$(Managed)\UnityEngine.TextRenderingModule.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
-  <ItemGroup><Compile Include="Plugin.cs" /><Compile Include="BlackoutFlight.cs" /><Compile Include="Locust.cs" /><Compile Include="LocustDeploymentRules.cs" /><Compile Include="Suppression.cs" /><Compile Include="ExhaustHeat.cs" /><Compile Include="DescentProfile.cs" /><Compile Include="TerrainPreview.cs" /><Compile Include="Datalink.cs" /><Compile Include="HpmRules.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="Plugin.cs" /><Compile Include="BlackoutFlight.cs" /><Compile Include="Locust.cs" /><Compile Include="SmartMineController.cs" /><Compile Include="TargetReservations.cs" /><Compile Include="LocustDeploymentRules.cs" /><Compile Include="Suppression.cs" /><Compile Include="ExhaustHeat.cs" /><Compile Include="DescentProfile.cs" /><Compile Include="TerrainPreview.cs" /><Compile Include="Datalink.cs" /><Compile Include="HpmRules.cs" /></ItemGroup>
   <ItemGroup><EmbeddedResource Condition="Exists('Bundle\CircuitBreaker.nobp')" Include="Bundle\CircuitBreaker.nobp" LogicalName="CircuitBreaker.CircuitBreaker.nobp" /></ItemGroup>
 </Project>

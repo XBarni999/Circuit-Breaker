@@ -1,6 +1,6 @@
 # Circuit Breaker
 
-Current release: v0.1.16 (non-radar weapon launch hotfix; early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
+Current public release: v0.1.16 (non-radar weapon launch hotfix; early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
 
 Source code and documentation for a Nuclear Option tactical weapons mod. The playable pack is delivered as one `Circuit-Breaker.dll`, containing the gameplay runtime and an embedded Blueprinter bundle.
 
@@ -41,11 +41,11 @@ The missile holds its pass until the full emission charge expires, then attacks 
 
 External and internal racks offer one, two or three missiles, with a maximum of three per rack. Compatible aircraft stations are expanded from the native ALM-C450 and AGM-68 heavy-missile options, with each rack limited by the station's native ammunition capacity. Rack placement, weapon icons and exhaust appearance are local Unity assets and are preserved during runtime-only updates.
 
-## CBU-82M Locust
+## CBU-82M Locust (v0.1.17 development build)
 
 Locust is an unguided 400 kg mine dispenser using native CCIP aiming. Deployment is independent of target selection or detection. Its controller is bound at spawn, and ground clearance uses native radar altitude with a sea-level fallback when no ground collider is available. Empty or impacted containers are cleaned up. It aligns with its falling velocity, opens its doors before releasing four pairs of mines, and finishes deployment at approximately 325 m above terrain.
 
-Each of the eight mines carries 7 kg of conventional HE, arms four seconds after landing, triggers within 3 m of vehicles or aircraft, and self-destructs after 210 seconds. Damage uses native explosions. External racks hold one, two or three dispensers; internal racks hold one or two. Locust is also offered on native 250 kg bomb stations, with suitable internal/external rack types and capacities. Its physical mass remains 400 kg; this hotfix changes loadout compatibility.
+In v0.1.17, each of the eight submunitions is a Zhdan sensor mine. It descends vertically with its stabilizers down, with fall speed limited to 18 m/s, and rests on the surface normal. It arms four seconds after touchdown and scans every 0.75 seconds for enemy GroundVehicle units within 70 m. Aircraft, buildings, allies and unknown factions are excluded; static terrain blocks detection. A successful detection reserves the target across all mines for five seconds, then launches one unmodified vanilla GS25 from 80 m above the mine, aimed at that target with the original owner and faction. The spent mine disappears with a small native dust effect. Unused mines expire after 300 seconds without an attack or contact explosion. The former 7 kg contact-mine behavior is replaced. Native GS25 guidance and damage remain unchanged. This new sensor behavior still needs mission and multiplayer testing. External racks hold one, two or three dispensers; internal racks hold one or two. Locust is also offered on native 250 kg bomb stations, with suitable internal/external rack types and capacities. Its physical mass remains 400 kg; this hotfix changes loadout compatibility.
 
 ## Installed mod-aircraft compatibility
 

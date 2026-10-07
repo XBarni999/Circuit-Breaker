@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.1.17 - Zhdan sensor mines (unreleased)
+
+- Replace Locust contact mines with vertical Zhdan sensor mines using the supplied model and texture.
+- Scan enemy ground vehicles within 70 m every 0.75 seconds after four-second arming; exclude aircraft, buildings and friendlies.
+- Reserve targets across mines for five seconds and launch one vanilla GS25 from 80 m above the mine, preserving the original owner and faction.
+- Limit mine descent to 18 m/s; expire after 300 seconds without a contact blast. Preserve aircraft racks, icons and Blackout exhaust.
+- Native GS25 guidance and damage are unchanged. Mission and multiplayer testing are pending.
+
 ## v0.1.16 - Non-radar weapon launch hotfix
 
 - Restrict the HPM datalink launch gate to ARH/SARH weapon seekers. Optical, inertial, IR, laser-guided and unguided weapons keep native launch and guidance behavior.

@@ -8,18 +8,18 @@ root = Path(__file__).resolve().parent.parent
 parser = argparse.ArgumentParser()
 parser.add_argument('--bundle', type=Path)
 args = parser.parse_args()
-bundle = args.bundle or root / 'Delivery~' / 'Circuit Breaker_0.1.13.nobp'
+bundle = args.bundle or root / 'Delivery~' / 'Circuit Breaker_0.1.17.nobp'
 env = UnityPy.load(str(bundle))
 base = 'assets/blueprinter/mods/iron gate/'
 report = []
 for name in ['blackout.prefab', 'locust.prefab', 'locustmine.prefab',
              'blackoutdeploy.anim', 'locustopen.anim', 'locustminedeploy.anim',
-             'models/champ.fbx', 'models/clusterbomb.fbx', 'models/submunition_mine.fbx']:
+             'models/champ.fbx', 'models/clusterbomb.fbx', 'models/zhdan_mine.fbx', 'zhdanminedeploy.anim', 'textures/zhdan_mine_albedo.png']:
     assert base + name in env.container, name
     report.append('PRESENT ' + name)
 
 objects = {o.path_id: o for o in env.objects}
-for name, expected in [('blackout', 2), ('locust', 0), ('locustmine', 7)]:
+for name, expected in [('blackout', 2), ('locust', 0), ('locustmine', 0)]:
     go = env.container[base + name + '.prefab'].read_typetree()
     components = [objects[c['component']['m_PathID']] for c in go['m_Component']]
     data = [o.read_typetree() for o in components if o.type.name == 'MonoBehaviour']
@@ -63,7 +63,7 @@ assert not locust_info['glideBomb'] and not locust_info['missile']
 report.append('CHECKED native unguided CCIP WeaponInfo flags')
 
 manifest = json.loads(env.container['assets/blueprinter/generated/patch_manifest.json'].read().m_Script.lstrip('\ufeff'))
-assert manifest['modName'] == 'Circuit Breaker' and manifest['modVersion'] == '0.1.13'
+assert manifest['modName'] == 'Circuit Breaker' and manifest['modVersion'] == '0.1.17'
 ops = [json.loads(o['payloadJson']) for o in manifest['Ops'] if o['opId'] == 'OpAddWeaponToHardpoint']
 assert len(ops) == 11
 assert all(op['aircraft'] for op in ops)
