@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace CircuitBreaker
 {
-    [BepInPlugin("ua.ncmod.circuitbreaker", "Circuit Breaker", "0.1.15")]
+    [BepInPlugin("ua.ncmod.circuitbreaker", "Circuit Breaker", "0.1.16")]
     [BepInDependency("com.nikkorap.blueprinter", "2.0.1")]
     public sealed class Plugin : BaseUnityPlugin
     {
@@ -24,7 +24,7 @@ namespace CircuitBreaker
             Diagnostic=text=>Logger.LogInfo(text);
             Radius=Config.Bind("Blackout","Radius",10000f,new ConfigDescription("HPM radius (m): enemy ground electronics and aircraft of every faction.",new AcceptableValueRange<float>(1500,10000)));
             Duration=Config.Bind("Blackout","SuppressionSeconds",4f,new ConfigDescription("Recovery delay after the last HPM exposure (seconds).",new AcceptableValueList<float>(4f)));
-            TriggerRange=Config.Bind("Blackout","ActivationRange",10000f,"Distance to the original launch target or GPS point that starts emission (m).");
+            TriggerRange=Config.Bind("Blackout","ActivationRange",10000f,"Distance to the original selected ground radar / SAM that starts emission (m).");
             EmissionDuration=Config.Bind("Blackout","EmissionSeconds",20f,new ConfigDescription("Continuous emission duration after activation.",new AcceptableValueRange<float>(15,20)));
             MineLife=Config.Bind("Locust","Lifetime",210f,new ConfigDescription("Seconds after touchdown before native self detonation.",new AcceptableValueRange<float>(180,240)));
             DescentAngle=Config.Bind("Blackout","MaximumDescentAngle",20f,new ConfigDescription("Maximum approach descent angle in degrees; terrain avoidance can still command a climb.",new AcceptableValueRange<float>(3,25)));
@@ -67,7 +67,7 @@ namespace CircuitBreaker
             Patch(typeof(CombatHUD),"SelectUnit",nameof(HudAccess));
             Patch(typeof(TargetListSelector),"CheckExclusions",nameof(ListAccess),false);
             harmony.Patch(AccessTools.Method(typeof(Turret),"AimTurret",new[]{typeof(WeaponStation)}),postfix:new HarmonyMethod(typeof(Plugin),nameof(Aim)));
-            Logger.LogInfo("Circuit Breaker 0.1.15: immutable launch-target activation; aircraft radar and datalink suppression including allies. Host authoritative simulation.");
+            Logger.LogInfo("Circuit Breaker 0.1.16: immutable launch-target activation; aircraft radar and datalink suppression including allies. Host authoritative simulation.");
         }
         void Patch(Type t,string method,string handler,bool prefix=true){var m=AccessTools.Method(t,method)??throw new MissingMethodException(t.Name,method);var h=new HarmonyMethod(typeof(Plugin),handler);harmony.Patch(m,prefix:prefix?h:null,postfix:prefix?null:h);}
         static void Launch(MountedMissile __instance,Unit owner,Unit target,GlobalPosition aimpoint){if(!owner||!owner.IsServer||!__instance.info||__instance.info.name!="WI_Blackout"||(bool)AccessTools.Field(typeof(MountedMissile),"fired").GetValue(__instance))return;launchPoints.RemoveAll(p=>!p.owner||p.expiry<Time.time);launchPoints.Add(new LaunchPoint{owner=owner,target=target,gps=!target,point=target?target.GlobalPosition():aimpoint,expiry=Time.time+10});}
@@ -108,17 +108,17 @@ namespace CircuitBreaker
         static bool Assess(Turret __instance)=>!(Suppression.Active(__instance)||Suppression.ActiveUnit(__instance.GetAttachedUnit()))||(__instance.GetWeaponStation()?.WeaponInfo?.gun??false);
         static bool TurretStep(Turret __instance){if(!(Suppression.Active(__instance)||Suppression.ActiveUnit(__instance.GetAttachedUnit()))||(__instance.GetWeaponStation()?.WeaponInfo?.gun??false))return true;AccessTools.Field(typeof(Turret),"target").SetValue(__instance,null);AccessTools.Field(typeof(Turret),"timeOnTarget").SetValue(__instance,0f);return false;}
         static bool BlackoutTargetAllowed(WeaponStation station,Unit owner,Unit target){
-            if(!target||!station.WeaponInfo||station.WeaponInfo.name!="WI_Blackout")return true;
-            if(Suppression.IsActivator(target)&&target.NetworkHQ&&target.NetworkHQ!=owner.NetworkHQ)return true;
-            if(owner==Datalink.LocalAircraft&&Time.time>=nextTargetNotice){nextTargetNotice=Time.time+3;var report=SceneSingleton<AircraftActionsReport>.i;if(report)report.ReportText("Blackout: select an enemy ground radar / SAM, or use a GPS point.",3);}
+            if(!station.WeaponInfo||station.WeaponInfo.name!="WI_Blackout")return true;
+            if(target&&Suppression.IsActivator(target)&&target.NetworkHQ&&target.NetworkHQ!=owner.NetworkHQ)return true;
+            if(owner==Datalink.LocalAircraft&&Time.time>=nextTargetNotice){nextTargetNotice=Time.time+3;var report=SceneSingleton<AircraftActionsReport>.i;if(report)report.ReportText("Blackout: select an enemy ground radar / SAM.",3);}
             return false;
         }
-        static bool StationFire(WeaponStation __instance,Unit owner,Unit target){if(!BlackoutTargetAllowed(__instance,owner,target))return false;if(owner is Aircraft aircraft&&!(__instance.WeaponInfo?.gun??false))return Datalink.CanContact(aircraft,target);return !Suppression.ActiveUnit(owner)||(__instance.WeaponInfo?.gun??false);}
-        static bool MountAccess(WeaponStation __instance,Unit owner,Unit target)=>BlackoutTargetAllowed(__instance,owner,target)&&(!(owner is Aircraft aircraft)||Datalink.CanContact(aircraft,target));
+        static bool StationFire(WeaponStation __instance,Unit owner,Unit target){if(!BlackoutTargetAllowed(__instance,owner,target))return false;if(owner is Aircraft aircraft&&!(__instance.WeaponInfo?.gun??false))return Datalink.CanLaunch(aircraft,target,__instance.WeaponInfo);return !Suppression.ActiveUnit(owner)||(__instance.WeaponInfo?.gun??false);}
+        static bool MountAccess(WeaponStation __instance,Unit owner,Unit target)=>BlackoutTargetAllowed(__instance,owner,target)&&(!(owner is Aircraft aircraft)||Datalink.CanLaunch(aircraft,target,__instance.WeaponInfo));
         static bool TargetAccess(WeaponManager __instance,Unit target)=>Datalink.CanContact(__instance.GetComponentInParent<Aircraft>(),target);
         static bool AnalyzeAccess(WeaponStation weaponStation,Unit analyzer,TrackingInfo trackingInfo,ref OpportunityThreat __result){if(trackingInfo!=null&&trackingInfo.TryGetUnit(out var target)){
             bool wrongBlackoutTarget=weaponStation.WeaponInfo&&weaponStation.WeaponInfo.name=="WI_Blackout"&&!Suppression.IsActivator(target);
-            if(wrongBlackoutTarget||(analyzer is Aircraft aircraft&&!Datalink.CanContact(aircraft,target))){__result=default;return false;}
+            if(wrongBlackoutTarget||(analyzer is Aircraft aircraft&&!Datalink.CanLaunch(aircraft,target,weaponStation.WeaponInfo))){__result=default;return false;}
         }return true;}
         static void ConeAccess(Transform fromTransform,List<Unit> __result){var aircraft=fromTransform?fromTransform.GetComponentInParent<Aircraft>():null;if(Suppression.ActiveAircraft(aircraft))__result.RemoveAll(target=>!Datalink.CanContact(aircraft,target));}
         static void RangeAccess(Transform fromTransform,List<TrackingInfo> __result){var aircraft=fromTransform?fromTransform.GetComponentInParent<Aircraft>():null;if(Suppression.ActiveAircraft(aircraft))__result.RemoveAll(track=>!track.TryGetUnit(out var target)||!Datalink.CanContact(aircraft,target));}

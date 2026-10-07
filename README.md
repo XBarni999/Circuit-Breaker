@@ -1,6 +1,6 @@
 # Circuit Breaker
 
-Current release: v0.1.15 (plugin startup hotfix; early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
+Current release: v0.1.16 (non-radar weapon launch hotfix; early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
 
 Source code and documentation for a Nuclear Option tactical weapons mod. The playable pack is delivered as one `Circuit-Breaker.dll`, containing the gameplay runtime and an embedded Blueprinter bundle.
 
@@ -29,15 +29,15 @@ Actual current Unity models, rendered with their in-game materials.
 
 Blackout captures the target assigned to each missile when it is fired. Deselecting that target or selecting a different unit afterwards does not change the missile's designation. It does not activate or redirect toward unrelated radars encountered along the route.
 
-HPM starts when the remembered enemy ground radar or missile air-defense target is within 10 km of the missile. GPS launches use the remembered coordinate point as their activation reference. Explicit launches against ordinary tanks are rejected. No aircraft suppression occurs before this activation gate is met.
+HPM starts when the remembered enemy ground radar or missile air-defense target is within 10 km of the missile. The mod has no player-facing GPS designation interface; a selected ground radar/SAM is required. Vanilla free-fire supplies a point 50 km ahead rather than a player-selected GPS coordinate, so targetless Blackout launches are rejected. Explicit launches against ordinary tanks are rejected. No aircraft suppression occurs before this activation gate is met.
 
 Once active, the missile emits continuously for 20 seconds. Coverage follows the missile within a 10 km radius, refreshes every 0.25 seconds and respects static terrain shielding. Enemy ground radar, laser defenses and missile-turret acquisition are suppressed; gun CIWS retains degraded aiming. Native jamming events provide map indicators.
 
-Aircraft of every faction in the emission zone, including the launch aircraft and other friendly aircraft, lose radar contacts and access to remote datalink contacts. Local optical observations remain usable. Ground electronics and aircraft recover four seconds after their last HPM exposure. They remain suppressed through the first three seconds; overlapping active emitters extend the outage. The old 18-second recovery configuration is migrated automatically. This is applied per receiver without deleting the shared faction tracking database.
+Aircraft of every faction in the emission zone, including the launch aircraft and other friendly aircraft, lose radar contacts and access to remote datalink contacts. Local optical observations remain usable. Ground electronics and aircraft recover four seconds after their last HPM exposure. They remain suppressed through the first three seconds; overlapping active emitters extend the outage. The old 18-second recovery configuration is migrated automatically. This is applied per receiver without deleting the shared faction tracking database. Optical, inertial, infrared, laser-guided and unguided weapons retain native launch behavior even while datalink is unavailable. Only ARH/SARH weapon launches retain the radar-contact gate; native seekers still determine whether guidance succeeds.
 
 The nominal terrain clearance is 35 m. Forward/downward probes inspect terrain and roofs up to six seconds ahead, including a swept corridor for narrow structures. Pitch requests ramp gradually and native maneuver limits remain in control; late obstacle detection can still result in a crash. Impact detonation uses the small native 2 kg HE charge, and disabled custom visuals are cleaned up.
 
-The missile holds its pass until the full emission charge expires, then attacks its remembered surviving unit. A fallback target may be selected only after emission ends if the original unit is gone; the original GPS point remains the fallback when no suitable unit is nearby.
+The missile holds its pass until the full emission charge expires, then attacks its remembered surviving unit. A fallback target may be selected only after emission ends if the original unit is gone; the remembered last target position remains the fallback when no suitable unit is nearby.
 
 External and internal racks offer one, two or three missiles, with a maximum of three per rack. Compatible aircraft stations are expanded from the native ALM-C450 and AGM-68 heavy-missile options, with each rack limited by the station's native ammunition capacity. Rack placement, weapon icons and exhaust appearance are local Unity assets and are preserved during runtime-only updates.
 

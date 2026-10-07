@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.1.16 - Non-radar weapon launch hotfix
+
+- Restrict the HPM datalink launch gate to ARH/SARH weapon seekers. Optical, inertial, IR, laser-guided and unguided weapons keep native launch and guidance behavior.
+- Apply the same rule to weapon assessment so non-radar weapons are not rejected indirectly.
+- Remove the misleading GPS launch hint. There is no player-facing GPS designation interface; Blackout requires a selected ground radar/SAM.
+
+
 ## v0.1.15 - Critical plugin startup fix
 
 - Replace the invalid 4-to-4 acceptable range with a fixed four-second acceptable value list.
