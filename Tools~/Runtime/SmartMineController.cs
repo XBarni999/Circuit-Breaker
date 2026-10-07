@@ -32,7 +32,7 @@ namespace CircuitBreaker
                 }
                 previous=transform.position;return;
             }
-            if(Time.time-landedAt>=Plugin.MineLife.Value){Retire();return;}
+            if(Time.time-landedAt>=SmartMineRules.Lifetime){Retire();return;}
             if(Time.time<nextScan)return;nextScan=Time.time+SmartMineRules.ScanInterval;
             Scan();
         }

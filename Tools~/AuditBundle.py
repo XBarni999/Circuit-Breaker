@@ -8,7 +8,7 @@ root = Path(__file__).resolve().parent.parent
 parser = argparse.ArgumentParser()
 parser.add_argument('--bundle', type=Path)
 args = parser.parse_args()
-bundle = args.bundle or root / 'Delivery~' / 'Circuit Breaker_0.1.17.nobp'
+bundle = args.bundle or root / 'Delivery~' / 'Circuit Breaker_0.1.18.nobp'
 env = UnityPy.load(str(bundle))
 base = 'assets/blueprinter/mods/iron gate/'
 report = []
@@ -19,7 +19,7 @@ for name in ['blackout.prefab', 'locust.prefab', 'locustmine.prefab',
     report.append('PRESENT ' + name)
 
 objects = {o.path_id: o for o in env.objects}
-for name, expected in [('blackout', 2), ('locust', 0), ('locustmine', 0)]:
+for name, expected in [('blackout', 2), ('locust', 0), ('locustmine', 7), ('lawnchair', 0), ('zhdanmine', 0)]:
     go = env.container[base + name + '.prefab'].read_typetree()
     components = [objects[c['component']['m_PathID']] for c in go['m_Component']]
     data = [o.read_typetree() for o in components if o.type.name == 'MonoBehaviour']
@@ -44,7 +44,7 @@ for name, expected in [('blackout', 2), ('locust', 0), ('locustmine', 0)]:
 assert base + 'shaders/hpmwave.shader' not in env.container
 assert base + 'meshes/hpmwave.asset' not in env.container
 report.append('CHECKED removed visible microwave shader and mesh')
-for name, mass in [('blackout', 900), ('locust', 400), ('locustmine', 16)]:
+for name, mass in [('blackout', 900), ('locust', 400), ('locustmine', 16), ('lawnchair', 400), ('zhdanmine', 16)]:
     definition = env.container[base + 'def_' + name + '.asset'].read_typetree()
     info = env.container[base + 'wi_' + name + '.asset'].read_typetree()
     assert definition['mass'] == mass == info['massPerRound'], name
@@ -63,9 +63,9 @@ assert not locust_info['glideBomb'] and not locust_info['missile']
 report.append('CHECKED native unguided CCIP WeaponInfo flags')
 
 manifest = json.loads(env.container['assets/blueprinter/generated/patch_manifest.json'].read().m_Script.lstrip('\ufeff'))
-assert manifest['modName'] == 'Circuit Breaker' and manifest['modVersion'] == '0.1.17'
+assert manifest['modName'] == 'Circuit Breaker' and manifest['modVersion'] == '0.1.18'
 ops = [json.loads(o['payloadJson']) for o in manifest['Ops'] if o['opId'] == 'OpAddWeaponToHardpoint']
-assert len(ops) == 11
+assert len(ops) == 16
 assert all(op['aircraft'] for op in ops)
 profile = json.loads((root / 'Editor' / 'InstalledAircraftCompatibility.json').read_text(encoding='utf8'))['entries']
 assert profile, 'No installed mod-aircraft compatibility data'
@@ -75,7 +75,7 @@ for op in ops:
     internal = 'internal' in op['weaponJsonKey']
     targets = {entry['aircraftJsonKey']: entry['hardpointIndices'] for entry in op['aircraft']}
     for row in profile:
-        eligible = row['sourceWeaponKey'].startswith('bomb_250_') if 'Locust' in op['weaponJsonKey'] else row['sourceWeaponKey'].startswith(('CruiseMissile1_internal', 'AGM_heavy_'))
+        eligible = row['sourceWeaponKey'].startswith('bomb_250_') if any(key in op['weaponJsonKey'] for key in ['Locust', 'LawnChair']) else row['sourceWeaponKey'].startswith(('CruiseMissile1_internal', 'AGM_heavy_'))
         if eligible and row['internalMount'] == internal and row['ammo'] >= mount['ammo']:
             assert row['index'] in targets.get(row['aircraftJsonKey'], []), (op['weaponJsonKey'], row)
     assert not any('mig' in key.lower() for key in targets)
@@ -132,6 +132,18 @@ for key in ['bomb_500_double', 'bomb_250_triple']:
     positions = [t['m_LocalPosition'] for t in station_transforms(go)]
     assert len(positions) == (2 if key.endswith('double') else 3)
 report.append('CHECKED actual bundle: user-edited bomb racks retain all launch stations')
+for key in ['bomb_cluster1_single', 'bomb_cluster1_single_internal', 'bomb_cluster1_dual_internal', 'bomb_500_double', 'bomb_250_triple']:
+    original = env.container[base + 'cb_locust_' + key + '.prefab'].read_typetree()
+    sensor = env.container[base + 'cb_lawnchair_' + key + '.prefab'].read_typetree()
+    coords = lambda go: [(t['m_LocalPosition'], t['m_LocalRotation'], t['m_LocalScale']) for t in station_transforms(go)]
+    assert coords(original) == coords(sensor), key
+    old_op = next(op for op in ops if op['weaponJsonKey'] == 'CB_Locust_' + key)
+    new_op = next(op for op in ops if op['weaponJsonKey'] == 'CB_LawnChair_' + key)
+    assert old_op['aircraft'] == new_op['aircraft'], key
+assert env.container[base + 'wi_locustmine.asset'].read_typetree()['blastDamage'] == 7
+assert env.container[base + 'wi_zhdanmine.asset'].read_typetree()['blastDamage'] == 0
+assert env.container[base + 'wi_lawnchair.asset'].read_typetree()['weaponName'] == 'CBU-82S Lawn Chair'
+report.append('CHECKED separate contact/sensor payloads and identical rack placement/carrier compatibility')
 for texture in ['champ_albedo.png', 'cbu_albedo.png', 'submunition_mine_albedo.png']:
     assert base + 'textures/' + texture in env.container
 report.append('CHECKED all three supplied albedo textures are packaged')

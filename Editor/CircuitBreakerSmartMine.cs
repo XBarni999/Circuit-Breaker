@@ -23,13 +23,13 @@ public static class CircuitBreakerSmartMine
     static void Description(string key,string text){
         foreach(var path in new[]{"WI_"+key+".asset","Def_"+key+".asset"}){
             var obj=AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(R+path);var s=new SerializedObject(obj);s.FindProperty("description").stringValue=text;
-            if(key=="LocustMine"&&s.FindProperty("blastDamage")!=null)s.FindProperty("blastDamage").floatValue=0;
+            if(key=="ZhdanMine"&&s.FindProperty("blastDamage")!=null)s.FindProperty("blastDamage").floatValue=0;
             s.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(obj);
         }
     }
     [MenuItem("Blueprinter/Circuit Breaker/Update smart mine only")]
     public static void UpdateMine(){
-        var root=PrefabUtility.LoadPrefabContents(R+"LocustMine.prefab");
+        var root=PrefabUtility.LoadPrefabContents(R+"ZhdanMine.prefab");
         try{
             var missile=root.GetComponent<Missile>();var serialized=new SerializedObject(missile);
             serialized.FindProperty("foldingFins").arraySize=0;serialized.FindProperty("blastYield").floatValue=0;
@@ -61,11 +61,11 @@ public static class CircuitBreakerSmartMine
             var renderers=model.GetComponentsInChildren<Renderer>(true);var bounds=renderers[0].bounds;foreach(var renderer in renderers.Skip(1))bounds.Encapsulate(renderer.bounds);
             model.transform.position+=new Vector3(root.transform.position.x-bounds.center.x,root.transform.position.y-.09f-bounds.min.y,root.transform.position.z-bounds.center.z);
             var report=new StringBuilder();report.AppendLine("Zhdan deployed bounds: "+bounds.size);report.AppendLine("Four fin hinges face down; lowest deployed mesh point is -0.09 m relative to mine origin.");
-            clip.SampleAnimation(model,0);PrefabUtility.SaveAsPrefabAsset(root,R+"LocustMine.prefab");
+            clip.SampleAnimation(model,0);PrefabUtility.SaveAsPrefabAsset(root,R+"ZhdanMine.prefab");
             Directory.CreateDirectory(R+"Validation~");File.WriteAllText(R+"Validation~/smart-mine-model.txt",report.ToString());
         }finally{PrefabUtility.UnloadPrefabContents(root);}
-        Description("Locust","CCIP dispenser deploying eight Zhdan sensor mines at approximately 325 m. Each mine arms after four seconds, scans enemy ground vehicles within 70 m and launches one vanilla GS25 from 80 m above the mine. Five-minute lifetime; coordinated five-second target reservations.");
-        Description("LocustMine","Zhdan sensor mine: enemy ground vehicles only, 70 m detection radius, one vanilla GS25 top attack, five-minute lifetime. No contact explosive charge.");
+        Description("LawnChair","CCIP dispenser deploying eight Zhdan sensor mines at approximately 325 m. Each mine arms after four seconds, scans enemy ground vehicles within 70 m and launches one vanilla GS25 from 80 m above the mine. Five-minute lifetime; coordinated five-second target reservations.");
+        Description("ZhdanMine","Zhdan sensor mine: enemy ground vehicles only, 70 m detection radius, one vanilla GS25 top attack, five-minute lifetime. No contact explosive charge.");
         AssetDatabase.SaveAssets();
     }
 }

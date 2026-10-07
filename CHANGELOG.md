@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.1.18 - Separate Locust and Lawn Chair (unreleased)
+
+- Restore original Locust contact mines, their flat model, 7 kg HE charge and 210-second lifetime.
+- Add CBU-82S Lawn Chair as a separate selectable bomb deploying Zhdan sensor mines with vanilla GS25 attacks.
+- Clone the existing Locust rack options and carrier compatibility, preserving every user-edited pylon transform.
+- Separate runtime identities, payload selection and mine lifetimes; Blackout remains unchanged.
+
 ## v0.1.17 - Zhdan sensor mines (unreleased)
 
 - Replace Locust contact mines with vertical Zhdan sensor mines using the supplied model and texture.

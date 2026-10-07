@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace CircuitBreaker
 {
-    [BepInPlugin("ua.ncmod.circuitbreaker", "Circuit Breaker", "0.1.17")]
+    [BepInPlugin("ua.ncmod.circuitbreaker", "Circuit Breaker", "0.1.18")]
     [BepInDependency("com.nikkorap.blueprinter", "2.0.1")]
     public sealed class Plugin : BaseUnityPlugin
     {
@@ -26,13 +26,13 @@ namespace CircuitBreaker
             Duration=Config.Bind("Blackout","SuppressionSeconds",4f,new ConfigDescription("Recovery delay after the last HPM exposure (seconds).",new AcceptableValueList<float>(4f)));
             TriggerRange=Config.Bind("Blackout","ActivationRange",10000f,"Distance to the original selected ground radar / SAM that starts emission (m).");
             EmissionDuration=Config.Bind("Blackout","EmissionSeconds",20f,new ConfigDescription("Continuous emission duration after activation.",new AcceptableValueRange<float>(15,20)));
-            MineLife=Config.Bind("Locust","Lifetime",300f,new ConfigDescription("Smart mine lifetime after touchdown (seconds); expires without an attack.",new AcceptableValueList<float>(300f)));
+            MineLife=Config.Bind("Locust","Lifetime",210f,new ConfigDescription("Contact mine lifetime after touchdown (seconds).",new AcceptableValueRange<float>(180,240)));
             DescentAngle=Config.Bind("Blackout","MaximumDescentAngle",20f,new ConfigDescription("Maximum approach descent angle in degrees; terrain avoidance can still command a climb.",new AcceptableValueRange<float>(3,25)));
             DescentRamp=Config.Bind("Blackout","DescentRampSeconds",5f,new ConfigDescription("Time to gradually enter the approach descent after launch.",new AcceptableValueRange<float>(3,25)));
             var revision=Config.Bind("General","TuningRevision",0,"Default tuning migration revision.");
             if(revision.Value<2){if(Radius.Value==2000)Radius.Value=10000;if(TriggerRange.Value==4000)TriggerRange.Value=10000;if(DescentAngle.Value==8)DescentAngle.Value=20;if(DescentRamp.Value==12)DescentRamp.Value=5;revision.Value=2;Config.Save();}
             if(revision.Value<3){Duration.Value=4;revision.Value=3;Config.Save();}
-            if(revision.Value<4){MineLife.Value=300;revision.Value=4;Config.Save();}
+            if(revision.Value<5){MineLife.Value=210;revision.Value=5;Config.Save();}
             harmony=new Harmony("ua.ncmod.circuitbreaker");
             Patch(typeof(Missile),"StartMissile",nameof(Started),false);
             Patch(typeof(MountedMissile),"Fire",nameof(Launch));
@@ -68,17 +68,20 @@ namespace CircuitBreaker
             Patch(typeof(CombatHUD),"SelectUnit",nameof(HudAccess));
             Patch(typeof(TargetListSelector),"CheckExclusions",nameof(ListAccess),false);
             harmony.Patch(AccessTools.Method(typeof(Turret),"AimTurret",new[]{typeof(WeaponStation)}),postfix:new HarmonyMethod(typeof(Plugin),nameof(Aim)));
-            Logger.LogInfo("Circuit Breaker 0.1.17: immutable launch-target activation; aircraft radar and datalink suppression including allies. Host authoritative simulation.");
+            Logger.LogInfo("Circuit Breaker 0.1.18: immutable launch-target activation; aircraft radar and datalink suppression including allies. Host authoritative simulation.");
         }
         void Patch(Type t,string method,string handler,bool prefix=true){var m=AccessTools.Method(t,method)??throw new MissingMethodException(t.Name,method);var h=new HarmonyMethod(typeof(Plugin),handler);harmony.Patch(m,prefix:prefix?h:null,postfix:prefix?null:h);}
         static void Launch(MountedMissile __instance,Unit owner,Unit target,GlobalPosition aimpoint){if(!owner||!owner.IsServer||!__instance.info||__instance.info.name!="WI_Blackout"||(bool)AccessTools.Field(typeof(MountedMissile),"fired").GetValue(__instance))return;launchPoints.RemoveAll(p=>!p.owner||p.expiry<Time.time);launchPoints.Add(new LaunchPoint{owner=owner,target=target,gps=!target,point=target?target.GlobalPosition():aimpoint,expiry=Time.time+10});}
-        static void Spawned(Missile __result,Unit owner,Unit target){if(Is(__result,"WI_Locust")||Is(__result,"WI_LocustMine"))Started(__result);if(!Is(__result,"WI_Blackout"))return;int i=launchPoints.FindIndex(p=>p.owner==owner&&p.expiry>=Time.time);if(i<0)return;var f=__result.GetComponent<BlackoutFlight>()??__result.gameObject.AddComponent<BlackoutFlight>();f.Bind(__result);f.CaptureLaunch(launchPoints[i].target,launchPoints[i].point,launchPoints[i].gps);launchPoints.RemoveAt(i);}
+        static void Spawned(Missile __result,Unit owner,Unit target){if(Is(__result,"WI_Locust")||Is(__result,"WI_LawnChair")||Is(__result,"WI_LocustMine")||Is(__result,"WI_ZhdanMine"))Started(__result);if(!Is(__result,"WI_Blackout"))return;int i=launchPoints.FindIndex(p=>p.owner==owner&&p.expiry>=Time.time);if(i<0)return;var f=__result.GetComponent<BlackoutFlight>()??__result.gameObject.AddComponent<BlackoutFlight>();f.Bind(__result);f.CaptureLaunch(launchPoints[i].target,launchPoints[i].point,launchPoints[i].gps);launchPoints.RemoveAt(i);}
         static void Started(Missile __instance)
         {
             if(Is(__instance,"WI_Blackout"))(__instance.GetComponent<BlackoutFlight>()??__instance.gameObject.AddComponent<BlackoutFlight>()).Bind(__instance);
-            if(Is(__instance,"WI_Locust"))(__instance.GetComponent<LocustDispenser>()??__instance.gameObject.AddComponent<LocustDispenser>()).Bind(__instance);
-            if(Is(__instance,"WI_LocustMine"))(__instance.GetComponent<SmartMineController>()??__instance.gameObject.AddComponent<SmartMineController>()).Bind(__instance);
+            if(Is(__instance,"WI_Locust")||Is(__instance,"WI_LawnChair"))(__instance.GetComponent<LocustDispenser>()??__instance.gameObject.AddComponent<LocustDispenser>()).Bind(__instance);
+            if(Is(__instance,"WI_LocustMine"))(__instance.GetComponent<LocustMine>()??__instance.gameObject.AddComponent<LocustMine>()).Bind(__instance);
+            if(Is(__instance,"WI_ZhdanMine"))(__instance.GetComponent<SmartMineController>()??__instance.gameObject.AddComponent<SmartMineController>()).Bind(__instance);
         }
+        static bool Dispenser(Missile m)=>Is(m,"WI_Locust")||Is(m,"WI_LawnChair");
+        static bool Mine(Missile m)=>Is(m,"WI_LocustMine")||Is(m,"WI_ZhdanMine");
         static void Initialized(OpticalSeekerCruiseMissile __instance,Unit target,GlobalPosition aimpoint)
         {
             var m=SeekerMissile.GetValue(__instance) as Missile;if(!Is(m,"WI_Blackout"))return;
@@ -86,18 +89,18 @@ namespace CircuitBreaker
         }
         static bool Seek(OpticalSeekerCruiseMissile __instance){var m=SeekerMissile.GetValue(__instance) as Missile;if(!Is(m,"WI_Blackout"))return true;m.GetComponent<BlackoutFlight>()?.Guide(__instance);return false;}
         static bool SlowChecks(OpticalSeekerCruiseMissile __instance){var m=SeekerMissile.GetValue(__instance) as Missile;return !Is(m,"WI_Blackout");}
-        static bool ServerStep(Missile __instance)=>!Is(__instance,"WI_LocustMine");
+        static bool ServerStep(Missile __instance)=>!Is(__instance,"WI_ZhdanMine")&&(!Is(__instance,"WI_LocustMine")||!(__instance.GetComponent<LocustMine>()?.Grounded??false));
         static bool Unguided(Missile __instance){
-            if(Is(__instance,"WI_LocustMine"))return false;
-            if(Is(__instance,"WI_Locust")&&__instance.rb&&__instance.rb.velocity.sqrMagnitude>1){
+            if(Mine(__instance))return false;
+            if(Dispenser(__instance)&&__instance.rb&&__instance.rb.velocity.sqrMagnitude>1){
                 // Passive tail stabilization: align the nose with air velocity, retaining gravity/CCIP.
                 __instance.SetAimpoint(__instance.GlobalPosition()+__instance.rb.velocity.normalized*1000,Vector3.zero);
             }
             return true;
         }
-        static void PassiveType(MissileSeeker __instance,ref string __result){var m=SeekerMissile.GetValue(__instance) as Missile;if(Is(m,"WI_Locust"))__result="Unguided / CCIP";else if(Is(m,"WI_LocustMine"))__result="Smart mine / GS25";}
-        static void PassiveMinimum(MissileSeeker __instance,ref float __result){var m=SeekerMissile.GetValue(__instance) as Missile;if(Is(m,"WI_Locust")||Is(m,"WI_LocustMine"))__result=0;}
-        static bool Collisions(Missile __instance){if(Is(__instance,"WI_Locust")){__instance.GetComponent<LocustDispenser>()?.CheckImpact();return false;}if(Is(__instance,"WI_LocustMine"))return false;if(Is(__instance,"WI_Blackout")){var flight=__instance.GetComponent<BlackoutFlight>();if(!flight)return true;flight.CheckImpact();return false;}return true;}
+        static void PassiveType(MissileSeeker __instance,ref string __result){var m=SeekerMissile.GetValue(__instance) as Missile;if(Dispenser(m))__result="Unguided / CCIP";else if(Is(m,"WI_LocustMine"))__result="Contact mine";else if(Is(m,"WI_ZhdanMine"))__result="Smart mine / GS25";}
+        static void PassiveMinimum(MissileSeeker __instance,ref float __result){var m=SeekerMissile.GetValue(__instance) as Missile;if(Dispenser(m)||Mine(m))__result=0;}
+        static bool Collisions(Missile __instance){if(Dispenser(__instance)){__instance.GetComponent<LocustDispenser>()?.CheckImpact();return false;}if(Mine(__instance))return false;if(Is(__instance,"WI_Blackout")){var flight=__instance.GetComponent<BlackoutFlight>();if(!flight)return true;flight.CheckImpact();return false;}return true;}
         static bool Detection(TargetDetector __instance)=>!Suppression.Active(__instance);
         static void Operational(TargetDetector __instance,ref bool __result){if(Suppression.Active(__instance))__result=false;}
         static void Jammed(Radar __instance,ref bool __result){if(Suppression.Active(__instance))__result=true;}

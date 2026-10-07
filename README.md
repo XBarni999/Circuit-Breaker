@@ -41,17 +41,42 @@ The missile holds its pass until the full emission charge expires, then attacks 
 
 External and internal racks offer one, two or three missiles, with a maximum of three per rack. Compatible aircraft stations are expanded from the native ALM-C450 and AGM-68 heavy-missile options, with each rack limited by the station's native ammunition capacity. Rack placement, weapon icons and exhaust appearance are local Unity assets and are preserved during runtime-only updates.
 
-## CBU-82M Locust (v0.1.17 development build)
+## CBU-82M Locust
 
-Locust is an unguided 400 kg mine dispenser using native CCIP aiming. Deployment is independent of target selection or detection. Its controller is bound at spawn, and ground clearance uses native radar altitude with a sea-level fallback when no ground collider is available. Empty or impacted containers are cleaned up. It aligns with its falling velocity, opens its doors before releasing four pairs of mines, and finishes deployment at approximately 325 m above terrain.
+Locust remains the original unguided 400 kg CCIP dispenser. It opens before deploying eight conventional contact mines at approximately 325 m above terrain, independently of selected targets. Each mine contains 7 kg HE, arms four seconds after landing, reacts to vehicles or aircraft within 3 m and self-destructs after 210 seconds. Damage uses native explosions. The original flat mine model is restored.
 
-In v0.1.17, each of the eight submunitions is a Zhdan sensor mine. It descends vertically with its stabilizers down, with fall speed limited to 18 m/s, and rests on the surface normal. It arms four seconds after touchdown and scans every 0.75 seconds for enemy GroundVehicle units within 70 m. Aircraft, buildings, allies and unknown factions are excluded; static terrain blocks detection. A successful detection reserves the target across all mines for five seconds, then launches one unmodified vanilla GS25 from 80 m above the mine, aimed at that target with the original owner and faction. The spent mine disappears with a small native dust effect. Unused mines expire after 300 seconds without an attack or contact explosion. The former 7 kg contact-mine behavior is replaced. Native GS25 guidance and damage remain unchanged. This new sensor behavior still needs mission and multiplayer testing. External racks hold one, two or three dispensers; internal racks hold one or two. Locust is also offered on native 250 kg bomb stations, with suitable internal/external rack types and capacities. Its physical mass remains 400 kg; this hotfix changes loadout compatibility.
+## CBU-82S Lawn Chair (v0.1.18 development build)
+
+Lawn Chair is a separate selectable dispenser: it sits around waiting for visitors. It carries eight Zhdan sensor mines, without replacing Locust. The mines descend vertically with stabilizers down, with fall speed limited to 18 m/s, and rest on the surface normal. They arm four seconds after touchdown and scan every 0.75 seconds for enemy GroundVehicle units within 70 m. Aircraft, buildings, allies and unknown factions are excluded; static terrain blocks detection.
+
+A mine reserves its target across all sensor mines for five seconds, launches one unmodified vanilla GS25 from 80 m above itself toward that target, then disappears with a small native dust effect. Ownership and faction are inherited from the original launcher. Unused sensor mines expire after 300 seconds without a contact explosion. Native GS25 guidance and damage remain unchanged. Mission and multiplayer testing remain pending.
+
+Both dispensers preserve the current user-edited rack positions and support the same aircraft as Locust. External racks carry one, two or three dispensers; internal racks carry one or two, subject to station capacity. Compatibility includes native 250 kg bomb stations; physical dispenser mass remains 400 kg.
+
+## Vanilla aircraft compatibility
+
+The table is verified against the carrier operations serialized in the v0.1.18 bundle and the imported vanilla aircraft definitions (game API 0.34.2). Yes means at least one compatible hardpoint; rack sizes and internal/external options depend on the individual station's capacity. These registrations still require loadout and mission checks in-game.
+
+| Vanilla aircraft | AGM-180 Blackout | CBU-82M Locust | CBU-82S Lawn Chair |
+| --- | --- | --- | --- |
+| CI-22 Cricket | Yes | Yes | Yes |
+| T/A-30 Compass | Yes | Yes | Yes |
+| VT-7 Vagrant | Yes | Yes | Yes |
+| A-19 Brawler | Yes | Yes | Yes |
+| FS-12 Revoker | Yes | Yes | Yes |
+| FS-20 Vortex | Yes | Yes | Yes |
+| KR-67 Ifrit | Yes | Yes | Yes |
+| EW-25 Medusa | No | Yes | Yes |
+| SFB-81 Darkreach | Yes | Yes | Yes |
+| Alkyon AB-4 | Yes | Yes | Yes |
+
+Locust contains conventional 7 kg contact mines. Lawn Chair contains sensor mines that launch vanilla GS25 submunitions. Neither mine is a separate aircraft loadout item; select its corresponding dispenser.
 
 ## Installed mod-aircraft compatibility
 
 The v0.1.13 compatibility profile follows weapon options in the installed aircraft bundles. MiG-29 is deliberately excluded. Rack counts follow each native station's capacity; Blackout never exceeds three per rack.
 
-| Aircraft | Blackout | Locust |
+| Aircraft | Blackout | Locust / Lawn Chair |
 | --- | --- | --- |
 | FS-41 Eclipse | Yes | Yes |
 | CI-23 Camel | Yes | Yes |

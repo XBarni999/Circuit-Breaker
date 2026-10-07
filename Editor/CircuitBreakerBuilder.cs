@@ -12,7 +12,7 @@ public static class CircuitBreakerSetup
 {
     const string R="Assets/Blueprinter/Mods/Iron Gate/";
     const string D="Assets/Blueprinter/_donotship/";
-    const string Version="0.1.17";
+    const string Version="0.1.18";
     static CircuitBreakerSetup(){EditorApplication.update+=Poll;}
     static bool busy;
     static void Poll(){if(busy||EditorApplication.isCompiling||EditorApplication.isUpdating||EditorApplication.isPlayingOrWillChangePlaymode)return;string p=R+"Tools~/request.txt";if(!File.Exists(p))return;var action=File.ReadAllText(p).Trim();busy=true;EditorApplication.delayCall+=()=>{try{if(action=="create")Create();else if(action=="build")Build();else if(action=="refreshbuild"){Create();Build();}else if(action=="heatbuild"){UpdateHeatOnly();Build();}else if(action=="flightbuild"){UpdateAltitudeOnly();Build();}else Inspect();File.WriteAllText(R+"Tools~/result.txt","OK "+action);}catch(Exception e){File.WriteAllText(R+"Tools~/result.txt",e.ToString());Debug.LogException(e);}finally{busy=false;if(File.Exists(p)&&File.ReadAllText(p).Trim()==action)File.Delete(p);}};}
@@ -325,7 +325,7 @@ public static class CircuitBreakerSetup
             foreach(var renderer in go.GetComponentsInChildren<Renderer>(true).Where(r=>r.enabled&&!(r is ParticleSystemRenderer)))foreach(var mat in renderer.sharedMaterials)if(!mat||(AssetDatabase.GetAssetPath(mat).StartsWith(R)&&!mat.GetTexture("_BaseMap")))throw new Exception("Untextured visible material "+path+" / "+renderer.name);
             b.AppendLine("OK "+path);
         }
-        var mine=Load<GameObject>(R+"LocustMine.prefab").GetComponent<Missile>();if(mine.GetYield()!=0)throw new Exception("Smart mine must not carry a contact HE charge");
+        var mine=Load<GameObject>(R+"LocustMine.prefab").GetComponent<Missile>();if(mine.GetYield()!=7)throw new Exception("Contact mine must contain 7 kg HE");
         foreach(var key in new[]{"Blackout","Locust","LocustMine"}){
             var definition=Load<MissileDefinition>(R+"Def_"+key+".asset");var weapon=Load<WeaponInfo>(R+"WI_"+key+".asset");var missile=Load<GameObject>(R+key+".prefab").GetComponent<Missile>();
             if(definition.description!=weapon.description||missile.GetMass()!=weapon.massPerRound)throw new Exception("Encyclopedia stats differ from weapon: "+key);

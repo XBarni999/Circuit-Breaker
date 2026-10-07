@@ -18,7 +18,7 @@ class ConfigurationCheck {
         ConfigEntry<float> Radius,Duration,TriggerRange,EmissionDuration,MineLife,DescentAngle,DescentRamp;
         BINDINGS
         if(Duration.Value!=4)throw new Exception("Legacy recovery configuration was not clamped to four seconds");
-        if(Radius.Value!=10000||TriggerRange.Value!=10000||EmissionDuration.Value!=20||MineLife.Value!=300)throw new Exception("Configuration defaults changed");
+        if(Radius.Value!=10000||TriggerRange.Value!=10000||EmissionDuration.Value!=20||MineLife.Value!=210)throw new Exception("Configuration defaults changed");
         config.Save();
         Console.WriteLine("RUNTIME_CONFIGURATION_PASSED: all seven production bindings execute using installed BepInEx; legacy recovery 18 -> 4.");
     }
