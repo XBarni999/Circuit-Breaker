@@ -13,7 +13,7 @@ small_font = ImageFont.truetype('C:/Windows/Fonts/segoeui.ttf', 23)
 label_font = ImageFont.truetype('C:/Windows/Fonts/bahnschrift.ttf', 20)
 items = [
     ('lawn-chair', 'CBU-82S LAWN CHAIR', 'Eight Zhdan sensor mines / vanilla GS25 top attack', 'SENSOR-MINE DISPENSER'),
-    ('zhdan-mine', 'ZHDAN / WAITING FOR VISITORS', '70 m optical detection / hop and GS25 handoff', 'SUPPLIED MODEL RENDER'),
+    ('zhdan-mine', 'ZHDAN / WAITING FOR VISITORS', '70 m optical detection / hop and GS25 handoff', 'DEPLOYED SENSOR MINE'),
     ('blackout', 'AGM-180 BLACKOUT', 'High-power microwave cruise missile', 'DEPLOYED FLIGHT CONFIGURATION'),
     ('locust', 'CBU-82M LOCUST', 'Area-denial mine dispenser', 'CLOSED DISPENSER'),
     ('locust-mine', 'LOCUST SUBMUNITION', '7 kg HE mine / eight per dispenser', 'DEPLOYED FINS'),

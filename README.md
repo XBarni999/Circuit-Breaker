@@ -8,7 +8,7 @@ This repository contains code, build scripts, tests, text documentation and rend
 
 ## Weapon gallery
 
-Actual current Unity models, rendered with their in-game materials.
+Actual weapon models rendered with their materials. The dispenser and rack photographs use Unity; the upright Zhdan photograph uses the supplied Blender model.
 
 ![AGM-180 Blackout with deployed wings](docs/gallery/blackout.png)
 
@@ -55,7 +55,7 @@ Locust remains the original unguided 400 kg CCIP dispenser. It opens before depl
 
 ![Zhdan sensor mine model](docs/gallery/zhdan-mine.png)
 
-The dispenser shares the Locust exterior. The Zhdan image is the supplied model render; its in-game drop pose is vertical, stabilizers down.
+The dispenser shares the Locust exterior. The Zhdan mine is rendered upright with deployed stabilizers, matching its in-game waiting pose.
 
 Lawn Chair is a separate selectable dispenser: it sits around waiting for visitors. Think of it as the least relaxing lawn furniture on the battlefield: deploy it near roads or vehicle routes to set up a patient optical ambush. It carries eight Zhdan sensor mines, without replacing Locust. The mines descend vertically with stabilizers down, with fall speed limited to 18 m/s, and rest on the surface normal. They arm four seconds after touchdown and scan every 0.75 seconds for enemy GroundVehicle units within 70 m. Aircraft, buildings, allies and unknown factions are excluded. Detection requires both the 70 m sensor radius and a clear ground-level line of sight. Road decks, bridges, terrain and other solid obstacles can hide a vehicle from the mine. Before hopping, the mine checks the upward corridor and the attack path from its predicted apex; blocked corridors leave it waiting.
 
