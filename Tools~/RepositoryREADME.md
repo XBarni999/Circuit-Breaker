@@ -1,6 +1,6 @@
 # Circuit Breaker
 
-Current public release: v0.1.16 (non-radar weapon launch hotfix; early testing). Player mission tests confirm effective ground air-defense suppression and reliable Locust mine deployment. Further testing is needed for radar recovery, varied terrain, overlapping emitters and multiplayer.
+Current release: v0.1.21 (early testing). Locust deployment and Blackout suppression have been tested in missions. Lawn Chair sensor detection, the visible hop and GS25 handoff need further terrain and multiplayer testing.
 
 Source code and documentation for a Nuclear Option tactical weapons mod. The playable pack is delivered as one `Circuit-Breaker.dll`, containing the gameplay runtime and an embedded Blueprinter bundle.
 
@@ -49,11 +49,17 @@ Price: $900,000 per dispenser.
 
 Locust remains the original unguided 400 kg CCIP dispenser. It opens before deploying eight conventional contact mines at approximately 325 m above terrain, independently of selected targets. Each mine contains 7 kg HE, arms four seconds after landing, reacts to vehicles or aircraft within 3 m and self-destructs after 210 seconds. Damage uses native explosions. The original flat mine model is restored.
 
-## CBU-82S Lawn Chair (v0.1.21 development build)
+## CBU-82S Lawn Chair
 
-Lawn Chair is a separate selectable dispenser: it sits around waiting for visitors. It carries eight Zhdan sensor mines, without replacing Locust. The mines descend vertically with stabilizers down, with fall speed limited to 18 m/s, and rest on the surface normal. They arm four seconds after touchdown and scan every 0.75 seconds for enemy GroundVehicle units within 70 m. Aircraft, buildings, allies and unknown factions are excluded. Detection requires both the 70 m sensor radius and a clear ground-level line of sight. Road decks, bridges, terrain and other solid obstacles can hide a vehicle from the mine. Before hopping, the mine checks the upward corridor and the attack path from its predicted apex; blocked corridors leave it waiting.
+![CBU-82S Lawn Chair dispenser](docs/gallery/lawn-chair.png)
 
-A mine reserves its target across all sensor mines, then visibly hops upward on a roughly four-second ballistic arc with a slight spin. At its 80 m apex the mine is replaced by one unmodified vanilla GS25 aimed at the reserved target. The reservation is refreshed throughout the hop and remains for five seconds after handoff. Swept collision checks cover the upward path and the dive toward the target; a blocked hop or dive cancels the attack and releases the reservation, rather than spawning a weapon through bridge decks or overhead roads. Ownership and faction are inherited from the original launcher. Unused sensor mines expire after 300 seconds without a contact explosion. Native GS25 guidance and damage remain unchanged. Mission and multiplayer testing remain pending.
+![Zhdan sensor mine model](docs/gallery/zhdan-mine.png)
+
+The dispenser shares the Locust exterior. The Zhdan image is the supplied model render; its in-game drop pose is vertical, stabilizers down.
+
+Lawn Chair is a separate selectable dispenser: it sits around waiting for visitors. Think of it as the least relaxing lawn furniture on the battlefield: deploy it near roads or vehicle routes to set up a patient optical ambush. It carries eight Zhdan sensor mines, without replacing Locust. The mines descend vertically with stabilizers down, with fall speed limited to 18 m/s, and rest on the surface normal. They arm four seconds after touchdown and scan every 0.75 seconds for enemy GroundVehicle units within 70 m. Aircraft, buildings, allies and unknown factions are excluded. Detection requires both the 70 m sensor radius and a clear ground-level line of sight. Road decks, bridges, terrain and other solid obstacles can hide a vehicle from the mine. Before hopping, the mine checks the upward corridor and the attack path from its predicted apex; blocked corridors leave it waiting.
+
+A mine reserves its target across all sensor mines, then visibly hops upward on a roughly four-second ballistic arc with a slight spin. At its 80 m apex the mine is replaced by one unmodified vanilla GS25 aimed at the reserved target. The reservation is refreshed throughout the hop and remains for five seconds after handoff. Swept collision checks cover the upward path and the dive toward the target; a blocked hop or dive cancels the attack and releases the reservation, rather than spawning a weapon through bridge decks or overhead roads. Ownership and faction are inherited from the original launcher. Unused sensor mines expire after 300 seconds without a contact explosion. Each sensor mine gets one shot; neighboring mines coordinate their targets instead of all firing at the same vehicle. Native GS25 guidance and damage remain unchanged. Mission and multiplayer testing remain pending.
 
 Custom deployment, scanning and hopping logic is restricted to SinglePlayer/Multiplayer mission states. Encyclopedia previews remain static, without door opening or mine spawning.
 

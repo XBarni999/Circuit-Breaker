@@ -16,7 +16,7 @@ $circuitCopies['README.md']=Join-Path $PSScriptRoot 'RepositoryREADME.md'
 $circuitCopies['CHANGELOG.md']=Join-Path $PSScriptRoot 'RepositoryCHANGELOG.md'
 $circuitExpected+=@($circuitCopies.Keys)
 $circuitGallery=Join-Path $circuitRoot 'Validation~/GalleryDocs'
-$circuitPhotos=@('blackout','locust','locust-mine','blackout-rack','locust-rack')
+$circuitPhotos=@('blackout','locust','locust-mine','blackout-rack','locust-rack','lawn-chair','zhdan-mine')
 $circuitExpected+=@($circuitPhotos | ForEach-Object {'docs/gallery/'+$_+'.png'})
 $circuitTracked=git -C $circuitPublish ls-files
 if($LASTEXITCODE){throw 'Cannot read tracked files.'}

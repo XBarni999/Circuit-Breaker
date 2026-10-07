@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.1.21 - Restore optical sensor visibility (unreleased)
+## v0.1.21 - Lawn Chair release and optical sensor visibility
 
 - Restore ground-level line-of-sight detection for Zhdan mines, as requested; vehicles hidden by road decks or other solid obstacles remain undetected.
 - Preserve the visible hop, ascent/dive collision checks and v0.1.20 prices.

@@ -12,10 +12,11 @@ public static class CircuitBreakerGallery
     static void Poll(){
         string request=Root+"Tools~/gallery-request.txt";
         if(!File.Exists(request)||EditorApplication.isCompiling||EditorApplication.isUpdating||EditorApplication.isPlayingOrWillChangePlaymode)return;
-        File.Delete(request);
-        try{Render();File.WriteAllText(Root+"Validation~/gallery-result.txt","OK");}
+        string action=File.ReadAllText(request).Trim();File.Delete(request);
+        try{if(action=="smart")RenderSmartOnly();else Render();File.WriteAllText(Root+"Validation~/gallery-result.txt","OK");}
         catch(Exception e){File.WriteAllText(Root+"Validation~/gallery-result.txt",e.ToString());Debug.LogException(e);}
     }
+    public static void RenderSmartOnly(){Directory.CreateDirectory(Root+"Validation~/Gallery");Shot("LawnChair","lawn-chair",false,new Vector3(1.8f,.85f,1));Shot("ZhdanMine","zhdan-mine",true,new Vector3(1.5f,.7f,1));}
     [MenuItem("Blueprinter/Circuit Breaker/Render gallery")]
     public static void Render(){
         Directory.CreateDirectory(Root+"Validation~/Gallery");
