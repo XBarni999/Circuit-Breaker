@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.1.19 - Encyclopedia preview and visible sensor-mine hop (unreleased)
+
+- Restrict custom dispenser/mine simulation to mission states, preventing encyclopedia deployment loops.
+- Replace instant elevated GS25 spawning with a visible ballistic mine hop and model handoff at the 80 m apex.
+- Check ascent and attack corridors against road, bridge and vehicle colliders; cancel obstructed attacks and release their target reservation.
+- Renew reservations during the hop and retain five seconds after launch. Preserve the existing v0.1.18 asset bundle, contact mines, racks and exhaust.
+- Compilation, package identity and jump/reservation tests pass; live mission and multiplayer checks remain pending.
+
 ## v0.1.18 - Separate Locust and Lawn Chair (unreleased)
 
 - Restore original Locust contact mines, their flat model, 7 kg HE charge and 210-second lifetime.

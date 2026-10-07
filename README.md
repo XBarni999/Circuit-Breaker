@@ -45,11 +45,13 @@ External and internal racks offer one, two or three missiles, with a maximum of 
 
 Locust remains the original unguided 400 kg CCIP dispenser. It opens before deploying eight conventional contact mines at approximately 325 m above terrain, independently of selected targets. Each mine contains 7 kg HE, arms four seconds after landing, reacts to vehicles or aircraft within 3 m and self-destructs after 210 seconds. Damage uses native explosions. The original flat mine model is restored.
 
-## CBU-82S Lawn Chair (v0.1.18 development build)
+## CBU-82S Lawn Chair (v0.1.19 development build)
 
 Lawn Chair is a separate selectable dispenser: it sits around waiting for visitors. It carries eight Zhdan sensor mines, without replacing Locust. The mines descend vertically with stabilizers down, with fall speed limited to 18 m/s, and rest on the surface normal. They arm four seconds after touchdown and scan every 0.75 seconds for enemy GroundVehicle units within 70 m. Aircraft, buildings, allies and unknown factions are excluded; static terrain blocks detection.
 
-A mine reserves its target across all sensor mines for five seconds, launches one unmodified vanilla GS25 from 80 m above itself toward that target, then disappears with a small native dust effect. Ownership and faction are inherited from the original launcher. Unused sensor mines expire after 300 seconds without a contact explosion. Native GS25 guidance and damage remain unchanged. Mission and multiplayer testing remain pending.
+A mine reserves its target across all sensor mines, then visibly hops upward on a roughly four-second ballistic arc with a slight spin. At its 80 m apex the mine is replaced by one unmodified vanilla GS25 aimed at the reserved target. The reservation is refreshed throughout the hop and remains for five seconds after handoff. Swept collision checks cover the upward path and the dive toward the target; a blocked hop or dive cancels the attack and releases the reservation, rather than spawning a weapon through bridge decks or overhead roads. Ownership and faction are inherited from the original launcher. Unused sensor mines expire after 300 seconds without a contact explosion. Native GS25 guidance and damage remain unchanged. Mission and multiplayer testing remain pending.
+
+Custom deployment, scanning and hopping logic is restricted to SinglePlayer/Multiplayer mission states. Encyclopedia previews remain static, without door opening or mine spawning.
 
 Both dispensers preserve the current user-edited rack positions and support the same aircraft as Locust. External racks carry one, two or three dispensers; internal racks carry one or two, subject to station capacity. Compatibility includes native 250 kg bomb stations; physical dispenser mass remains 400 kg.
 

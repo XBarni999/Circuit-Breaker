@@ -8,14 +8,16 @@ namespace CircuitBreaker
     {
         Missile missile; Vector3 previous; float boundAt,landedAt,nextScan; bool finished,visualFinished;
         static WeaponInfo strikeInfo;
+        Unit attackTarget; int reservationId; bool jumping,strikeLaunched; float jumpTime;
         readonly List<Unit> candidates=new List<Unit>();
         public bool Grounded {get;private set;}
         public void Bind(Missile m){
-            if(missile==m)return;missile=m;boundAt=Time.time;previous=transform.position;
+            if(!Plugin.InMission||missile==m)return;missile=m;boundAt=Time.time;previous=transform.position;
             var a=m.GetComponentInChildren<Animation>(true);if(a)a.Play();
         }
         void FixedUpdate(){
-            if(!missile||missile.disabled||finished||!missile.LocalSim||!missile.rb)return;
+            if(!Plugin.InMission||!missile||missile.disabled||finished||!missile.LocalSim||!missile.rb)return;
+            if(jumping){Jump();return;}
             if(!Grounded){
                 if(Time.time-boundAt>120){Retire();return;}
                 // Model +Y is its nose: the deployed feet face -Y throughout descent.
@@ -24,8 +26,9 @@ namespace CircuitBreaker
                 Vector3 step=transform.position-previous;
                 if(Time.time-boundAt>.1f){
                     RaycastHit? nearest=null;
-                    foreach(var hit in Physics.RaycastAll(previous+Vector3.up*.2f,step.sqrMagnitude>.001f?step.normalized:Vector3.down,step.magnitude+.4f,PhysicsLayers.StaticsMask,QueryTriggerInteraction.Ignore)){
-                        if(hit.collider.GetComponentInParent<Unit>()==missile||hit.normal.y<=.2f)continue;
+                    foreach(var hit in Physics.RaycastAll(previous+Vector3.up*.2f,step.sqrMagnitude>.001f?step.normalized:Vector3.down,step.magnitude+.4f,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore)){
+                        var surface=hit.collider.GetComponentInParent<Unit>();
+                        if(surface is Missile||surface is GroundVehicle||surface is Aircraft||surface is Ship||hit.normal.y<=.2f)continue;
                         if(!nearest.HasValue||hit.distance<nearest.Value.distance)nearest=hit;
                     }
                     if(nearest.HasValue)Land(nearest.Value.point,nearest.Value.normal);
@@ -37,7 +40,7 @@ namespace CircuitBreaker
             Scan();
         }
         void OnCollisionEnter(Collision collision){
-            if(!missile||!missile.LocalSim||Grounded||finished||collision.contactCount==0||Time.time-boundAt<.1f)return;
+            if(!Plugin.InMission||!missile||!missile.LocalSim||Grounded||jumping||finished||collision.contactCount==0||Time.time-boundAt<.1f)return;
             if((PhysicsLayers.StaticsMask&(1<<collision.gameObject.layer))==0)return;
             var contact=collision.GetContact(0);if(contact.normal.y>.2f)Land(contact.point,contact.normal);
         }
@@ -57,28 +60,56 @@ namespace CircuitBreaker
                 if(!target||!SmartMineRules.Eligible(target is GroundVehicle,target.disabled,target.NetworkHQ&&missile.NetworkHQ,target.NetworkHQ==missile.NetworkHQ,(target.GlobalPosition()-missile.GlobalPosition()).sqrMagnitude))continue;
                 Vector3 start=transform.position+Vector3.up*.25f,line=target.transform.position+Vector3.up-start;
                 bool blocked=false;
-                foreach(var hit in Physics.RaycastAll(start,line.normalized,line.magnitude,PhysicsLayers.StaticsMask,QueryTriggerInteraction.Ignore)){
+                foreach(var hit in Physics.RaycastAll(start,line.normalized,line.magnitude,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore)){
                     var unit=hit.collider.GetComponentInParent<Unit>();if(unit!=missile&&unit!=target){blocked=true;break;}
                 }
                 if(blocked||!TargetReservations.TryReserve(target.GetInstanceID(),Time.time))continue;
-                try{
-                    Vector3 port=transform.position+Vector3.up*SmartMineRules.LaunchHeight;
-                    Vector3 aim=(target.transform.position+Vector3.up-port).normalized;
-                    Unit owner=missile; if(missile.ownerID.TryGetUnit(out var launcher)&&launcher)owner=launcher;
-                    var strike=NetworkSceneSingleton<Spawner>.i.SpawnMissile(strikeInfo.weaponPrefab,port,Quaternion.LookRotation(aim),aim*25,target,owner);
-                    if(!strike){TargetReservations.Release(target.GetInstanceID());return;}
-                    strike.NetworkHQ=missile.NetworkHQ;strike.NetworkownerID=missile.ownerID;
-                    Retire();return;
-                }catch(System.Exception e){TargetReservations.Release(target.GetInstanceID());Plugin.Diagnostic?.Invoke("Smart mine GS25 launch failed: "+e.Message);return;}
+                attackTarget=target;reservationId=target.GetInstanceID();jumping=true;Grounded=false;jumpTime=0;
+                missile.rb.useGravity=false;missile.rb.isKinematic=true;
+                return;
             }
         }
-        void Retire(){if(finished)return;finished=true;missile.SetTarget(null);missile.Networkdisabled=true;FinishVisual();Destroy(missile.gameObject,2);}
+        bool Obstructed(Vector3 start,Vector3 direction,float distance){
+            foreach(var collider in Physics.OverlapSphere(start,.18f,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore))if(!collider.GetComponentInParent<Missile>())return true;
+            foreach(var hit in Physics.SphereCastAll(start,.18f,direction,distance,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore)){
+                // Other airborne ordnance is not a ceiling; bridge/road/vehicle colliders are.
+                if(hit.collider.GetComponentInParent<Missile>())continue;
+                return true;
+            }
+            return false;
+        }
+        void Jump(){
+            if(!attackTarget||attackTarget.disabled||attackTarget.NetworkHQ==missile.NetworkHQ){Retire();return;}
+            TargetReservations.Renew(reservationId,Time.time);
+            float nextTime=Mathf.Min(jumpTime+Time.fixedDeltaTime,SmartMineRules.JumpApexTime);
+            float rise=SmartMineRules.JumpHeight(nextTime)-SmartMineRules.JumpHeight(jumpTime);
+            Vector3 next=transform.position+Vector3.up*rise;
+            if(Obstructed(transform.position+Vector3.up*.25f,Vector3.up,rise+.05f)){Retire();return;}
+            missile.rb.MovePosition(next);
+            missile.rb.MoveRotation(Quaternion.Euler(0,nextTime*220,Mathf.Sin(nextTime/SmartMineRules.JumpApexTime*Mathf.PI)*8));
+            jumpTime=nextTime;
+            if(jumpTime<SmartMineRules.JumpApexTime)return;
+            Vector3 line=attackTarget.transform.position+Vector3.up-next;
+            foreach(var collider in Physics.OverlapSphere(next,.18f,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore))if(!collider.GetComponentInParent<Missile>()){Retire();return;}
+            // Do not launch a dive through a bridge deck or overhead road.
+            foreach(var hit in Physics.SphereCastAll(next,.18f,line.normalized,line.magnitude,PhysicsLayers.Everything,QueryTriggerInteraction.Ignore)){
+                var unit=hit.collider.GetComponentInParent<Unit>();if(unit==attackTarget||unit is Missile)continue;Retire();return;
+            }
+            try{
+                Unit owner=missile;if(missile.ownerID.TryGetUnit(out var launcher)&&launcher)owner=launcher;
+                var strike=NetworkSceneSingleton<Spawner>.i.SpawnMissile(strikeInfo.weaponPrefab,next,Quaternion.LookRotation(line),line.normalized*25,attackTarget,owner);
+                if(strike){strike.NetworkHQ=missile.NetworkHQ;strike.NetworkownerID=missile.ownerID;strikeLaunched=true;}
+            }catch(System.Exception e){Plugin.Diagnostic?.Invoke("Smart mine GS25 launch failed: "+e.Message);}
+            Retire();
+        }
+        void OnDestroy(){if(reservationId!=0&&!strikeLaunched)TargetReservations.Release(reservationId);}
+        void Retire(){if(finished)return;finished=true;if(reservationId!=0&&!strikeLaunched)TargetReservations.Release(reservationId);missile.SetTarget(null);missile.Networkdisabled=true;FinishVisual();Destroy(missile.gameObject,2);}
         void FinishVisual(){
             if(visualFinished)return;visualFinished=true;
             foreach(var renderer in GetComponentsInChildren<Renderer>(true))renderer.enabled=false;
             foreach(var collider in GetComponentsInChildren<Collider>(true))collider.enabled=false;
-            if(GameAssets.i&&GameAssets.i.rotorStrike_dirt){var puff=Instantiate(GameAssets.i.rotorStrike_dirt,transform.position,Quaternion.LookRotation(Vector3.up));puff.transform.localScale*=.12f;Destroy(puff,3);}
+            if(!strikeLaunched&&GameAssets.i&&GameAssets.i.rotorStrike_dirt){var puff=Instantiate(GameAssets.i.rotorStrike_dirt,transform.position,Quaternion.LookRotation(Vector3.up));puff.transform.localScale*=.12f;Destroy(puff,3);}
         }
-        void Update(){if(missile&&missile.disabled)FinishVisual();}
+        void Update(){if(Plugin.InMission&&missile&&missile.disabled)FinishVisual();}
     }
 }

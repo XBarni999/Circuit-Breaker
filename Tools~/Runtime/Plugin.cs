@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace CircuitBreaker
 {
-    [BepInPlugin("ua.ncmod.circuitbreaker", "Circuit Breaker", "0.1.18")]
+    [BepInPlugin("ua.ncmod.circuitbreaker", "Circuit Breaker", "0.1.19")]
     [BepInDependency("com.nikkorap.blueprinter", "2.0.1")]
     public sealed class Plugin : BaseUnityPlugin
     {
@@ -17,6 +17,7 @@ namespace CircuitBreaker
         struct LaunchPoint { public Unit owner,target; public bool gps; public GlobalPosition point; public float expiry; }
         static readonly List<LaunchPoint> launchPoints=new List<LaunchPoint>();
         static float nextTargetNotice;
+        internal static bool InMission=>GameManager.gameState==GameState.SinglePlayer||GameManager.gameState==GameState.Multiplayer;
         internal static bool Is(Missile m,string key)=>m && m.GetWeaponInfo() && m.GetWeaponInfo().name==key;
         internal static readonly System.Reflection.FieldInfo SeekerMissile=AccessTools.Field(typeof(MissileSeeker),"missile");
         void Awake()
@@ -68,13 +69,14 @@ namespace CircuitBreaker
             Patch(typeof(CombatHUD),"SelectUnit",nameof(HudAccess));
             Patch(typeof(TargetListSelector),"CheckExclusions",nameof(ListAccess),false);
             harmony.Patch(AccessTools.Method(typeof(Turret),"AimTurret",new[]{typeof(WeaponStation)}),postfix:new HarmonyMethod(typeof(Plugin),nameof(Aim)));
-            Logger.LogInfo("Circuit Breaker 0.1.18: immutable launch-target activation; aircraft radar and datalink suppression including allies. Host authoritative simulation.");
+            Logger.LogInfo("Circuit Breaker 0.1.19: immutable launch-target activation; aircraft radar and datalink suppression including allies. Host authoritative simulation.");
         }
         void Patch(Type t,string method,string handler,bool prefix=true){var m=AccessTools.Method(t,method)??throw new MissingMethodException(t.Name,method);var h=new HarmonyMethod(typeof(Plugin),handler);harmony.Patch(m,prefix:prefix?h:null,postfix:prefix?null:h);}
         static void Launch(MountedMissile __instance,Unit owner,Unit target,GlobalPosition aimpoint){if(!owner||!owner.IsServer||!__instance.info||__instance.info.name!="WI_Blackout"||(bool)AccessTools.Field(typeof(MountedMissile),"fired").GetValue(__instance))return;launchPoints.RemoveAll(p=>!p.owner||p.expiry<Time.time);launchPoints.Add(new LaunchPoint{owner=owner,target=target,gps=!target,point=target?target.GlobalPosition():aimpoint,expiry=Time.time+10});}
-        static void Spawned(Missile __result,Unit owner,Unit target){if(Is(__result,"WI_Locust")||Is(__result,"WI_LawnChair")||Is(__result,"WI_LocustMine")||Is(__result,"WI_ZhdanMine"))Started(__result);if(!Is(__result,"WI_Blackout"))return;int i=launchPoints.FindIndex(p=>p.owner==owner&&p.expiry>=Time.time);if(i<0)return;var f=__result.GetComponent<BlackoutFlight>()??__result.gameObject.AddComponent<BlackoutFlight>();f.Bind(__result);f.CaptureLaunch(launchPoints[i].target,launchPoints[i].point,launchPoints[i].gps);launchPoints.RemoveAt(i);}
+        static void Spawned(Missile __result,Unit owner,Unit target){if(!InMission)return;if(Is(__result,"WI_Locust")||Is(__result,"WI_LawnChair")||Is(__result,"WI_LocustMine")||Is(__result,"WI_ZhdanMine"))Started(__result);if(!Is(__result,"WI_Blackout"))return;int i=launchPoints.FindIndex(p=>p.owner==owner&&p.expiry>=Time.time);if(i<0)return;var f=__result.GetComponent<BlackoutFlight>()??__result.gameObject.AddComponent<BlackoutFlight>();f.Bind(__result);f.CaptureLaunch(launchPoints[i].target,launchPoints[i].point,launchPoints[i].gps);launchPoints.RemoveAt(i);}
         static void Started(Missile __instance)
         {
+            if(!InMission)return;
             if(Is(__instance,"WI_Blackout"))(__instance.GetComponent<BlackoutFlight>()??__instance.gameObject.AddComponent<BlackoutFlight>()).Bind(__instance);
             if(Is(__instance,"WI_Locust")||Is(__instance,"WI_LawnChair"))(__instance.GetComponent<LocustDispenser>()??__instance.gameObject.AddComponent<LocustDispenser>()).Bind(__instance);
             if(Is(__instance,"WI_LocustMine"))(__instance.GetComponent<LocustMine>()??__instance.gameObject.AddComponent<LocustMine>()).Bind(__instance);
