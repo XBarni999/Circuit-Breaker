@@ -4,7 +4,7 @@ Current release: v0.1.21 (early testing). Locust deployment and Blackout suppres
 
 Source code and documentation for a Nuclear Option tactical weapons mod. The playable pack is delivered as one `Circuit-Breaker.dll`, containing the gameplay runtime and an embedded Blueprinter bundle.
 
-This repository contains code, build scripts, tests, text documentation and rendered gallery images. Models, textures, icons, materials, prefabs, Unity metadata, game assemblies and compiled artifacts are not included. A configured local asset workspace or an existing Blueprinter bundle is required to build the playable mod.
+This repository contains runtime code, text documentation and rendered gallery images. Models, textures, icons, materials, prefabs, Unity metadata, game assemblies and compiled artifacts are not included. A configured local asset workspace or an existing Blueprinter bundle is required to build the playable mod.
 
 ## Weapon gallery
 
@@ -111,25 +111,20 @@ Place the verified `Circuit-Breaker.dll` in `BepInEx/plugins`. Do not also insta
 
 ## Building
 
-For a runtime-only build, supply the intended local bundle as `Tools~/Runtime/Bundle/CircuitBreaker.nobp`, along with the matching game and Blueprinter reference assemblies, then run:
+Supply a prepared Blueprinter bundle at `Runtime/Bundle/CircuitBreaker.nobp` and matching game and Blueprinter reference assemblies, then compile the runtime directly:
 
 ```powershell
-& './Tools~/Build.ps1' -GameDir 'D:/Games/Nuclear Option' -BlueprinterProject 'D:/Mods/Blueprinter-Editor'
+dotnet build Runtime/CircuitBreaker.csproj -c Release -p:GameDir="D:/Games/Nuclear Option" -p:BlueprinterProject="D:/Mods/Blueprinter-Editor"
 ```
 
-The script builds Release, verifies the embedded bundle SHA-256 against the input, and writes `Delivery~/Circuit-Breaker.dll` and a hash report. Runtime and bundle versions can differ when an unchanged approved bundle is reused.
-
-To update visuals, use a complete local Blueprinter asset workspace in Unity 2022.3.62f3. The editor code provides a build-only action that packages existing assets. Avoid regenerating weapons or racks over manually edited icons, exhaust and pylon placement. This repository alone cannot reconstruct the omitted visual assets.
-
-`Tools~/AuditBundle.py` checks the actual UnityFS bundle and requires Python with UnityPy. `Tools~/Tests` contains numerical guidance and HPM activation/scope checks. Game assemblies and local bundles must not be committed.
+The output is `Runtime/bin/Release/net472/Circuit-Breaker.dll`. The bundle is embedded when present. A complete local Blueprinter asset workspace is needed to edit and rebuild visual content; use Blueprinter's standard Mod Builder to package the existing tuned assets. Game assemblies and local bundles are not redistributed here.
 
 ## Source layout
 
-- `Editor`: local Unity/Blueprinter asset-generation and packaging code.
-- `Tools~/Runtime`: launch designation, guidance, collision handling, suppression, receiver-specific datalink filtering and mines.
-- `Tools~/Tests`: focused standalone policy and numerical checks.
-- `Tools~/Build.ps1`: verified single-DLL packaging.
-- `Tools~/PrepareRepository.ps1`: prepares an isolated publishing checkout with code and text only.
+- `Runtime`: launch designation, guidance, collision handling, suppression, datalink filtering and mines, plus the runtime project.
+- `docs/gallery`: completed weapon renders.
+- `docs/InstalledAircraftCompatibility.json`: aircraft hardpoint compatibility data.
+- `README.md` and `CHANGELOG.md`: installation, features and release history.
 
 ## Validation
 

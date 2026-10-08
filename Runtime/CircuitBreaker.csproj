@@ -7,7 +7,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <GameDir Condition="'$(GameDir)' == ''">F:\Games\Nuclear.Option.v0.34.1</GameDir>
     <Managed>$(GameDir)\NuclearOption_Data\Managed</Managed>
-    <BlueprinterProject Condition="'$(BlueprinterProject)' == ''">$(MSBuildThisFileDirectory)..\..\..\..\..\..</BlueprinterProject>
+    <BlueprinterProject Condition="'$(BlueprinterProject)' == ''">F:\NCMod\Blueprinter-Editor</BlueprinterProject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BepInEx"><HintPath>$(GameDir)\BepInEx\core\BepInEx.dll</HintPath><Private>false</Private></Reference>
